@@ -2,10 +2,13 @@ import React from 'react';
 
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+
 const Users = React.lazy(() => import('./views/users/Users'));
 const User = React.lazy(() => import('./views/users/User'));
+
 const AllSalaries = React.lazy(() => import('./views/salaries/allSalaries'));
 const AddSalarie = React.lazy(() => import('./views/salaries/addSalarie'));
+const ProfilSalarie = React.lazy(() => import('./views/salaries/profilSalarie'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -14,7 +17,8 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/salaries', exact: true, name: 'Salaries', component: AllSalaries },
   { path: '/salaries/liste', name: 'Listes des salaries', component: AllSalaries },
-  { path: '/salaries/add-salarie', name: 'Ajout dun salarie', component: AddSalarie }
+  { path: '/salaries/add-salarie', name: 'Ajout dun salarie', component: AddSalarie },
+  { path: '/salaries/profil/:id', exact: true, name: 'Profil', component: ProfilSalarie }
 ];
 
 export default routes;

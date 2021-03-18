@@ -11,7 +11,8 @@ import {
 import CIcon from '@coreui/icons-react'
 import ChartLineSimple from '../charts/ChartLineSimple'
 import ChartBarSimple from '../charts/ChartBarSimple'
-
+import usersData from '../users/UsersData'
+const count = usersData.length;
 const WidgetsDropdown = () => {
   // render
   return (
@@ -19,8 +20,8 @@ const WidgetsDropdown = () => {
       <CCol sm="6" lg="3">
         <CWidgetDropdown
           color="gradient-primary"
-          header="9.823"
-          text="Members online"
+          header={count}
+          text="Collaborateurs"
           footerSlot={
             <ChartLineSimple
               pointed

@@ -13,10 +13,10 @@ import usersData from '../../users/UsersData'
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 const fields = [
-  { key: 'Nom', _style: { width: '40%'} },
-  { key: 'Poste', _style: { width: '40%'} },
-  { key: 'Manager', _style: { width: '20%'} },
-  { key: 'Implatation', _style: { width: '20%'}, sorter: false },
+  { key: 'nomprenom',label: 'Nom Prénom', _style: { width: '40%'} },
+  { key: 'poste', _style: { width: '40%'} },
+  { key: 'manager', _style: { width: '20%'} },
+  { key: 'implatation', _style: { width: '20%'}, sorter: false },
 ]
 
 const perPageLabel = { label: 'Salarie par page :'}
@@ -49,11 +49,11 @@ const AllSalaries = () => {
               clickableRows
               pagination
               scopedSlots = {{
-                'Nom':
+                'nomprenom':
                     (item, index)=>{
                       return (
                         <td className="py-2">
-                         <Link to={`/salarie/profil/${item.id}`}>{item.Nom}</Link>
+                         <Link to={`/salaries/profil/${item.id}`}>{item.nomprenom}</Link>
                         </td>
                     )
                   }
