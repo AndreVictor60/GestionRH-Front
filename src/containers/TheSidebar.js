@@ -30,11 +30,13 @@ const TheSidebar = () => {
         <CIcon
           className="c-sidebar-brand-full"
           name="logo-negative"
+          src={logos}
           height={35}
         />
         <CIcon
           className="c-sidebar-brand-minimized"
           name="sygnet"
+          src={logos}
           height={35}
         />
       </CSidebarBrand>
