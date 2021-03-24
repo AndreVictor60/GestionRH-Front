@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import UserService from "../services/user.service";
+import SalarieService from "../services/salaries.service";
 
 export default class Home extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    UserService.getAllUsers().then(
+    SalarieService.getAllUsers().then(
       response => {
         this.setState({
           content: response.data

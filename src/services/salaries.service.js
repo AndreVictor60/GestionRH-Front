@@ -3,7 +3,7 @@ import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:8080/api/salaries';
 
-class UserService {
+class SalariesService {
   getAllUsers() {
     return axios.get(API_URL, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
   }
@@ -12,4 +12,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default new SalariesService();

@@ -95,7 +95,7 @@ class TheHeaderDropdown extends Component {
           <CBadge color="primary" className="mfs-auto">42</CBadge>
         </CDropdownItem>
         <CDropdownItem divider />
-        <CDropdownItem >
+        <CDropdownItem onClick={ () => this.logOutClick()}>
           <CIcon name="cil-lock-locked" className="mfe-2" />
             Deconnexion 
         </CDropdownItem>
