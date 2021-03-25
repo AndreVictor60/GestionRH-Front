@@ -98,17 +98,29 @@ class ListSalarie extends Component {
                       <tr key={salarie.id}>
                         <td>{salarie.nom + " " + salarie.prenom}</td>
                         {console.log(salarie.postes.length,"salarie.postes.length")}
-                          {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.id}>{poste.typeContrat.type}</td>)
-                              :
+                          {salarie.postes.length !== 0 ? salarie.postes.map(poste => 
+                            <>
+                            {poste.dateFin === null || formatDate(poste.dateFin) ? (
+                              <>
+                              <td>{poste.typeContrat.type}</td>
+                              <td>{poste.titrePoste.intitule}</td>
+                              <td>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>
+                              </>
+                              ):(
+                                <>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                </>
+                              )}
+                            </>
+                          ):(
+                            <>
                               <td></td>
-                          }
-                          {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.id}>{poste.dateFin !== null ? (formatDate(poste.dateFin) ? (poste.titrePoste.intitule) : ""):(poste.titrePoste.intitule)}</td>):<td></td>   
-                          }
-                          {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.id}>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>):<td></td>
-                          }
+                              <td></td>
+                              <td></td>
+                            </>
+                          )}
                             <td>{salarie.entreprise.nom}</td>
                         </tr>
                       )}
