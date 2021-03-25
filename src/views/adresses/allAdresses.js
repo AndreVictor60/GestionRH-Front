@@ -13,18 +13,11 @@ import CIcon from '@coreui/icons-react'
 import ListAdresse from '../../component/Adresse/ListAdresse';
 
 class AllAdresses extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-         adresses: [],
-         };
-  }
-
   render() {
     return(
       <>
         <CRow>
-          <CCol>
+          <CCol lg="12">
             <CCard>
               <CCardHeader>
                 Listes des adresses

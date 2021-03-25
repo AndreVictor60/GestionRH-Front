@@ -6,7 +6,7 @@ class ListSalarie extends Component {
       super(props);
       //this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
       this.retrieveSalaries = this.retrieveSalaries.bind(this);
-      this.refreshList = this.refreshList.bind(this);
+      //this.refreshList = this.refreshList.bind(this);
       this.setActiveSalarie = this.setActiveSalarie.bind(this);
       //this.searchTitle = this.searchTitle.bind(this);
       
@@ -91,15 +91,15 @@ class ListSalarie extends Component {
                         <td>{salarie.nom + " " + salarie.prenom}</td>
                         {console.log(salarie.postes.length,"salarie.postes.length")}
                           {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.typeContrat.type}>{poste.typeContrat.type}</td>)
+                              salarie.postes.map(poste => <td key={poste.id}>{poste.typeContrat.type}</td>)
                               :
                               <td></td>
                           }
                           {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.typeContrat.type}>{poste.titrePoste.intitule}</td>):<td></td>   
+                              salarie.postes.map(poste => <td key={poste.id}>{poste.titrePoste.intitule}</td>):<td></td>   
                           }
                           {salarie.postes.length !== 0 ? 
-                              salarie.postes.map(poste => <td key={poste.typeContrat.type}>{poste.manager.nom + " " + poste.manager.prenom}</td>):<td></td>
+                              salarie.postes.map(poste => <td key={poste.id}>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>):<td></td>
                           }
                             <td>{salarie.entreprise.nom}</td>
                         </tr>
