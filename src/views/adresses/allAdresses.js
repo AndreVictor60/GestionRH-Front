@@ -10,13 +10,13 @@ import {
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
-import ListSalarie from '../../../component/Salarie/ListSalarie';
+import ListAdresse from '../../component/Adresse/ListAdresse';
 
-class AllSalaries extends Component {
+class AllAdresses extends Component {
   constructor(props) {
     super(props);
     this.state = {
-         salaries: [],
+         adresses: [],
          };
   }
 
@@ -27,17 +27,17 @@ class AllSalaries extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                Listes des salaries
+                Listes des adresses
               </CCardHeader>
               <CCardBody>
               <CRow className="align-items-right mt-3">
                 <CCol xl md={{ span: 2, offset: 10 }}>
                     <CButton className="float-right" block variant="outline" color="info">
-                      <CIcon name="cil-user" />  Ajout d'un salarié
+                      <CIcon name="cil-user" />  Ajout d'une adresse
                     </CButton>
                 </CCol>
               </CRow>
-              <ListSalarie />
+              <ListAdresse />
               </CCardBody>
             </CCard>
           </CCol>
@@ -47,4 +47,4 @@ class AllSalaries extends Component {
   }
 }
 
-export default AllSalaries
+export default AllAdresses

@@ -8,9 +8,10 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import AuthService from "../services/auth.service";
-import { withRouter } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 
 class TheHeaderDropdown extends Component {
+  
   constructor(props) {
     super(props);
     
@@ -24,7 +25,7 @@ class TheHeaderDropdown extends Component {
 
   logOutClick () {
     AuthService.logout();
-    this.props.history.push("/login");
+    window.location = "/login";
   }
   
   render() {
@@ -95,9 +96,9 @@ class TheHeaderDropdown extends Component {
           <CBadge color="primary" className="mfs-auto">42</CBadge>
         </CDropdownItem>
         <CDropdownItem divider />
-        <CDropdownItem onClick={ () => this.logOutClick()}>
+        <CDropdownItem onClick={ () => this.logOutClick()} to="/login">
           <CIcon name="cil-lock-locked" className="mfe-2" />
-            Deconnexion 
+          Deconnexion
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

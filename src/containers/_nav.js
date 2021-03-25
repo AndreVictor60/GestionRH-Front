@@ -31,6 +31,24 @@ const _nav =  [
     ],
   },
   {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Adresse',
+    route: '/adresses',
+    icon: 'cil-puzzle',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Listes des adresses',
+        to: '/adresses/liste',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Ajout d\'une adresse',
+        to: '/adresses/add-adresse',
+      },
+    ],
+  },
+  {
     _tag: 'CSidebarNavDivider'
   },
   {
