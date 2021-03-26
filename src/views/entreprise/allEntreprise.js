@@ -10,9 +10,9 @@ import {
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
-import ListAdresse from '../../component/Adresse/ListAdresse';
+import ListEntreprise from '../../component/Entreprise/ListEntreprise';
 
-class AllAdresses extends Component {
+class AllEntreprise extends Component {
   render() {
     return(
       <>
@@ -20,17 +20,17 @@ class AllAdresses extends Component {
           <CCol lg="12">
             <CCard>
               <CCardHeader>
-                Listes des adresses
+                Listes des entreprise
               </CCardHeader>
               <CCardBody>
               <CRow className="align-items-right mt-3">
                 <CCol xl md={{ span: 2, offset: 10 }}>
-                    <CButton className="float-right" block variant="outline" color="info" to="/adresses/creation">
-                      <CIcon name="cil-home" />  Ajout d'une adresse
+                    <CButton className="float-right" block variant="outline" color="info" to="/entreprises/creation">
+                      <CIcon name="cil-home" />  Ajout d'une entreprise
                     </CButton>
                 </CCol>
               </CRow>
-              <ListAdresse />
+              <ListEntreprise />
               </CCardBody>
             </CCard>
           </CCol>
@@ -40,4 +40,4 @@ class AllAdresses extends Component {
   }
 }
 
-export default AllAdresses
+export default AllEntreprise

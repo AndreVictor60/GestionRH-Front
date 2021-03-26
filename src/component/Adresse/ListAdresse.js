@@ -55,7 +55,7 @@ class ListAdresse extends Component {
                             <td>{adresse.ville}</td>
                             <td>{adresse.codePostal}</td>
                             <td>{adresse.pays}</td>
-                            <td><Link to={"/adresses/" + adresse.id}>Modifier</Link></td>
+                            <td><Link to={"/adresses/modification/" + adresse.id}>Modifier</Link></td>
                         </tr>
                       )}
                       </tbody>

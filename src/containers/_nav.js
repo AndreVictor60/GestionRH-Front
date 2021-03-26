@@ -16,7 +16,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Salariés',
     route: '/salaries',
-    icon: 'cil-puzzle',
+    icon: 'cil-user',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -34,7 +34,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Adresse',
     route: '/adresses',
-    icon: 'cil-puzzle',
+    icon: 'cil-home',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -45,6 +45,23 @@ const _nav =  [
         _tag: 'CSidebarNavItem',
         name: 'Ajout d\'une adresse',
         to: '/adresses/add-adresse',
+      },
+    ],
+  },{
+    _tag: 'CSidebarNavDropdown',
+    name: 'Entreprise',
+    route: '/entreprises',
+    icon: 'cil-list',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Listes des entreprises',
+        to: '/entreprises/liste',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Ajout d\'une entreprise',
+        to: '/entreprises/creation',
       },
     ],
   },

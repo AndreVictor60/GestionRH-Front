@@ -8,7 +8,7 @@ import {
 } from '@coreui/react'
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
-import Adresse from '../../component/Adresse/Adresse';
+import Entreprise from '../../component/Entreprise/UpdateEntreprise';
 
 class AllAdresses extends Component {
 
@@ -22,7 +22,7 @@ class AllAdresses extends Component {
                 Modification d'une adresse
               </CCardHeader>
               <CCardBody>
-                <Adresse adresseid={this.props.match.params} />
+                <Entreprise entrepriseid={this.props.match.params} />
               </CCardBody>
             </CCard>
           </CCol>

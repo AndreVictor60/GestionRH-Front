@@ -32,7 +32,7 @@ export default class Adresse extends Component {
   
   onChangeNumero(e) {
     const numero = e.target.value;
-
+    console.log('numero',numero)
     this.setState(function(prevState) {
       return {
         currentAdresse: {
@@ -96,10 +96,15 @@ export default class Adresse extends Component {
 
   saveAdresse() {
     var data = {
+      numero: this.state.currentAdresse.numero,
+      voie: this.state.currentAdresse.voie,
+      complementAdresse: this.state.currentAdresse.complementAdresse,
+      ville: this.state.currentAdresse.ville,
+      codePostal: this.state.currentAdresse.codePostal,
+      pays: this.state.currentAdresse.pays
+    }
 
-    };
-
-    AdressesService.create(data)
+    AdressesService.save(data)
       .then(response => {
         this.setState({
           id: response.data.id,
@@ -120,7 +125,7 @@ export default class Adresse extends Component {
         <div className="submit-form">
           {this.state.submitted ? (
             <div>
-              <h4>You submitted successfully!</h4>
+              <h4>Vous avez envoyé avec succès!</h4>
             </div>
           ) : (
             <div>
@@ -150,8 +155,8 @@ export default class Adresse extends Component {
                 <input type="text" className="form-control" id="pays" value={currentAdresse.pays}  onChange={this.onChangePays}/>
               </div>
             </form>
-            <CButton type="submit" block  color="info" onClick={this.updateAdresse}>
-                Modifier
+            <CButton type="submit" block  color="info" onClick={this.saveAdresse}>
+                Créer une adresse
             </CButton>
             </div>
           )}

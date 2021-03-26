@@ -8,9 +8,9 @@ import {
 } from '@coreui/react'
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
-import Adresse from '../../component/Adresse/Adresse';
+import CreateEntreprise from '../../component/Entreprise/CreateEntreprise';
 
-class AllAdresses extends Component {
+class createEntreprise extends Component {
 
   render() {
     return(
@@ -19,10 +19,10 @@ class AllAdresses extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                Modification d'une adresse
+                Création d'une entreprise
               </CCardHeader>
               <CCardBody>
-                <Adresse adresseid={this.props.match.params} />
+                <CreateEntreprise />
               </CCardBody>
             </CCard>
           </CCol>
@@ -32,4 +32,4 @@ class AllAdresses extends Component {
   }
 }
 
-export default AllAdresses
+export default createEntreprise

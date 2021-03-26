@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import SalariesService from "../../services/salaries.service";
-function formatDate(string){
+
+function compareDateStringWithDateCurrent(string){
   let datePoste = new Date(string).getTime();
   let dateCurrent = new Date().getTime();
-  console.log("dateCurrent",dateCurrent)
   if(datePoste < dateCurrent){
     return false;
   }else{
     return true;
   }
 }
+
 class ListSalarie extends Component {
     constructor(props) {
       super(props);
@@ -42,7 +43,7 @@ class ListSalarie extends Component {
           this.setState({
             salaries: response.data
           });
-          console.log(response.data);
+          console.log("response.data",response.data);
         })
         .catch(e => {
           console.log(e);
@@ -97,21 +98,18 @@ class ListSalarie extends Component {
                     {salaries.map( salarie => 
                       <tr key={salarie.id}>
                         <td>{salarie.nom + " " + salarie.prenom}</td>
-                        {console.log(salarie.postes.length,"salarie.postes.length")}
-                          {salarie.postes.length !== 0 ? salarie.postes.map(poste => 
-                            <>
-                            {(poste.dateFin === null || formatDate(poste.dateFin)) && (
+                          {salarie.postes.length !== 0 ? salarie.postes.map((poste,key) => 
                               <>
-                              <td>{poste.typeContrat.type}</td>
-                              <td>{poste.titrePoste.intitule}</td>
-                              <td>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>
+                                {(poste.dateFin === null || compareDateStringWithDateCurrent(poste.dateFin)) && (
+                                  <>
+                                  <td key={key}>{poste.typeContrat.type}</td>
+                                  <td key={key + 100}>{poste.titrePoste.intitule}</td>
+                                  <td key={key + 1000}>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>
+                                  </>
+                                )}
                               </>
-                              )
-                                
-                              }
-                            </>
-                          ):(
-                            <>
+                            ) : (
+                              <>
                               <td></td>
                               <td></td>
                               <td></td>

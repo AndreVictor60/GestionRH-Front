@@ -10,6 +10,10 @@ const AddSalarie = React.lazy(() => import('./views/salaries/addSalarie'));
 const ProfilSalarie = React.lazy(() => import('./views/salaries/profilSalarie'));
 const AllAdresses = React.lazy(() => import('./views/adresses/allAdresses'));
 const Adresse = React.lazy(() => import('./views/adresses/Adresse'));
+const AllEntreprise = React.lazy(() => import('./views/entreprise/allEntreprise'));
+const UpdateEntreprise = React.lazy(() => import('./views/entreprise/updateEntreprise'));
+const CreateEntreprise = React.lazy(() => import('./views/entreprise/createEntreprise'));
+const CreateAdresse = React.lazy(() => import('./views/adresses/CreateAdresseV'));
 const AllTypeContrat = React.lazy(() => import('./views/type-contrat/allTypeContrat'));
 const UpdateTypeContrat = React.lazy(() => import('./views/type-contrat/modification-type-contrat'));
 const CreateTypeContrat = React.lazy(() => import('./views/type-contrat/creation-type-contrat'));
@@ -29,6 +33,10 @@ const routes = [
   { path: '/adresses', exact: true, name: 'Adresses', component: AllAdresses },
   { path: '/adresses/liste',exact: true, name: 'Listes des adresses', component: AllAdresses },
   { path: '/adresses/:id',exact: true, name: 'Une adresse', component: Adresse },
+  { path: '/adresses/creation',exact: true, name: 'Créer une adresse', component: CreateAdresse },
+  { path: '/entreprises/liste',exact: true, name: 'Listes des entreprises', component: AllEntreprise },
+  { path: '/entreprises/modification/:id',exact: true, name: 'Modifier une entreprises', component: UpdateEntreprise },
+  { path: '/entreprises/creation',exact: true, name: 'Créer une entreprises', component: CreateEntreprise },
   { path: '/type-contrat', exact: true, name: 'Type de contrat', component: AllTypeContrat },
   { path: '/type-contrat/liste',exact: true, name: 'Liste des types de contrat', component: AllTypeContrat },
   { path: '/type-contrat/modification/:id',exact: true, name: 'Modifier un type de contrat', component: UpdateTypeContrat },
