@@ -22,7 +22,7 @@ const UpdateDomaine = React.lazy(() => import('./views/domaine/modification-doma
 const CreateDomaine = React.lazy(() => import('./views/domaine/creation-domaine'));
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
+  { path: '/', exact: true, name: 'Home', component: Dashboard },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
