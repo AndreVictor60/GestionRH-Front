@@ -21,6 +21,14 @@ const CreateTypeContrat = React.lazy(() => import('./views/type-contrat/creation
 const AllDomaine = React.lazy(() => import('./views/domaine/allDomaine'));
 const UpdateDomaine = React.lazy(() => import('./views/domaine/modification-domaine'));
 const CreateDomaine = React.lazy(() => import('./views/domaine/creation-domaine'));
+const CreateRole = React.lazy(() => import('./views/role/creation-role'));
+const AllRole = React.lazy(() => import('./views/role/allRole'));
+const UpdateRole = React.lazy(() => import('./views/role/modification-role'));
+const AllCompetence = React.lazy(() => import('./views/competence/allCompetence'));
+const CreateCompetence = React.lazy(() => import('./views/competence/creation-competence'));
+const UpdateCompetence = React.lazy(() => import('./views/competence/modification-competence'));
+const AllTitrePoste = React.lazy(() => import('./views/titre-poste/allTitrePoste'));
+const CreateTitrePoste = React.lazy(() => import('./views/titre-poste/creation-titre-poste'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home', component: Dashboard },
@@ -42,10 +50,21 @@ const routes = [
   { path: '/type-contrat/liste',exact: true, name: 'Liste des types de contrat', component: AllTypeContrat },
   { path: '/type-contrat/modification/:id',exact: true, name: 'Modifier un type de contrat', component: UpdateTypeContrat },
   { path: '/type-contrat/creation',exact: true, name: 'Créer un nouveau type de contrat', component: CreateTypeContrat },
-  { path: '/domaine', exact: true, name: 'Domaine', component: AllTypeContrat },
+  { path: '/domaine', exact: true, name: 'Domaine', component: AllDomaine },
   { path: '/domaine/liste',exact: true, name: 'Liste des domaines', component: AllDomaine },
   { path: '/domaine/modification/:id',exact: true, name: 'Modification d\'un domaine', component: UpdateDomaine },
-  { path: '/domaine/creation',exact: true, name: 'Creation d\'un domaine', component: CreateDomaine }
+  { path: '/domaine/creation',exact: true, name: 'Creation d\'un domaine', component: CreateDomaine },
+  { path: '/role/creation',exact: true, name: 'Creation d\'un role', component: CreateRole },
+  { path: '/role', exact: true, name: 'Rôle', component: AllRole },
+  { path: '/role/liste',exact: true, name: 'Liste des rôles', component: AllRole },
+  { path: '/role/modification/:id',exact: true, name: 'Modification d\'un rôle', component: UpdateRole },
+  { path: '/competence', exact: true, name: 'Compétences', component: AllCompetence },
+  { path: '/competence/liste',exact: true, name: 'Liste des compétences', component: AllCompetence },
+  { path: '/competence/creation',exact: true, name: 'Creation d\'une compétence', component: CreateCompetence },
+  { path: '/competence/modification/:id',exact: true, name: 'Modification d\'une compétence', component: UpdateCompetence },
+  { path: '/titre-poste', exact: true, name: 'Intilulés de poste', component: AllTitrePoste },
+  { path: '/titre-poste/liste',exact: true, name: 'Liste des intitulés de poste', component: AllTitrePoste },
+  { path: '/titre-poste/creation',exact: true, name: 'Creation d\'un intitulé de poste', component: CreateTitrePoste },
 ];
 
 export default routes;

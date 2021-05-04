@@ -102,6 +102,60 @@ const _nav =  [
     ],
   },
   {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Rôle',
+    route: '/role',
+    icon: 'cil-puzzle',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Liste des rôles',
+        to: '/role/liste',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Création d\'un rôle',
+        to: '/role/creation',
+      }
+    ],
+  },
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Compétences',
+    route: '/competence',
+    icon: 'cil-puzzle',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Liste des compétences',
+        to: '/competence/liste',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Création d\'une compétence',
+        to: '/competence/creation',
+      }
+    ],
+  },
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Intitulés de poste',
+    route: '/titre-poste',
+    icon: 'cil-puzzle',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Liste des intitulés de poste',
+        to: '/titre-poste/liste',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Création d\'un intitulés de poste',
+        to: '/titre-poste/creation',
+      }
+    ],
+  },
+  {
     _tag: 'CSidebarNavDivider'
   },
   {
