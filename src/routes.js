@@ -30,6 +30,8 @@ const CreateCompetence = React.lazy(() => import('./views/competence/creation-co
 const UpdateCompetence = React.lazy(() => import('./views/competence/modification-competence'));
 const AllTitrePoste = React.lazy(() => import('./views/titre-poste/allTitrePoste'));
 const CreateTitrePoste = React.lazy(() => import('./views/titre-poste/creation-titre-poste'));
+const ListFormation = React.lazy(() => import('./views/formation/listFormation'));
+const Formation = React.lazy(() => import('./views/formation/formation'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home', component: Dashboard },
@@ -67,6 +69,8 @@ const routes = [
   { path: '/titre-poste', exact: true, name: 'Intilulés de poste', component: AllTitrePoste },
   { path: '/titre-poste/liste',exact: true, name: 'Liste des intitulés de poste', component: AllTitrePoste },
   { path: '/titre-poste/creation',exact: true, name: 'Creation d\'un intitulé de poste', component: CreateTitrePoste },
+  { path: '/formations', exact: true, name: 'Listes des formations', component: ListFormation },
+  { path: '/formation/:id', exact: true, name: 'Formation', component: Formation },
 ];
 
 export default routes;

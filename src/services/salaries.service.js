@@ -27,6 +27,10 @@ class SalariesService {
   update(data){
     return axios.put(API_URL, data, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*",'Content-Type': 'application/json' } });
   }
+
+  updateWithoutPassword(data){
+    return axios.put(API_URL+"/without-password", data, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*",'Content-Type': 'application/json' } });
+  }
 }
 
 export default new SalariesService();

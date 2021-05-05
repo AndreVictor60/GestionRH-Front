@@ -156,6 +156,24 @@ const _nav =  [
     ],
   },
   {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Formations',
+    route: '/formations',
+    icon: 'cil-bookmark',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Liste des formations',
+        to: '/formations',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Création d\'une formation',
+        to: '/formations/creation',
+      }
+    ],
+  },
+  {
     _tag: 'CSidebarNavDivider'
   },
   {

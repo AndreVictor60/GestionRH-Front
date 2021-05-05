@@ -14,29 +14,31 @@ import SalariesService from "../../services/salaries.service";
          this.handleChange = this.handleChange.bind(this);
          this.onChangeSkills = this.onChangeSkills.bind(this);
          this.onChangeRoles = this.onChangeRoles.bind(this);
+         this.updateSalarie = this.updateSalarie.bind(this);
          this.state = {
             currentSalarie: {
-                nom: null,
-                prenom: null,
-                email: null,
-                dateNaissance: null,
-                motDePasse: null,
-                telPersonnel: null,
-                mobilPersonnel: null,
-                telProfessionnel: null,
-                mobileProfessionnel: null,
+                nom: "",
+                prenom: "",
+                email: "",
+                dateNaissance: "",
+                motDePasse: "",
+                telPersonnel: "",
+                mobilPersonnel: "",
+                telProfessionnel: "",
+                mobileProfessionnel: "",
                 adresse: {
-                  id: null
+                  id: 0
                 },
                 domaine: {
-                  id: null
+                  id: 0
                 },
                 entreprise: {
-                  id: null
+                  id: 0
                 },
                 roles: [],
                 competences: [],
-                siManager: false
+                siManager: false,
+                version: null
               },
             adresses: [],
             domains: [],
@@ -144,27 +146,7 @@ import SalariesService from "../../services/salaries.service";
             }));
           }
         }
-  
-        if(name === "password"){
-          if (value !== "" || value !== null || value.length !== 0) {
-            this.setState((prevState) => ({password: value}));
-          }
-        }
-  
-        if(name === "passwordC"){
-          if(this.state.password !== value){
-            errors["passwordMatch"] = "Les mots de passe ne correspondent pas";
-          }
-          if (value !== "" || value !== null || value.length !== 0) {
-            this.setState((prevState) => ({
-              currentSalarie: {
-                ...prevState.currentSalarie,
-                motDePasse: value,
-              }
-            }));
-          }
-        }
-  
+
         if(name === "email"){
           if(!pattern.test(value)){
             errors["email"] = "Please enter valid email address.";
@@ -284,10 +266,14 @@ import SalariesService from "../../services/salaries.service";
           });
     }
 
-    updateSalarie(){
-        SalariesService.update()
+    updateSalarie(e){
+        e.preventDefault();
+        const json = JSON.stringify(this.state.currentSalarie).split('"value":').join('"id":');
+        const data = JSON.parse(json);
+        SalariesService.updateWithoutPassword(data)
         .then(resp => {
             console.log(resp);
+            // retourne sur le profil de utilisateur modifie
         }) 
         .catch(e => { console.log(e)})
     }
@@ -297,19 +283,19 @@ import SalariesService from "../../services/salaries.service";
         return (
             <div className="submit-form">
             <div>
-            <form name="createEmployee">
+            <form name="updateEmployee" onSubmit={this.updateSalarie}>
               <div className="row">
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="lastname">Nom *</label>
-                    <input type="text" name="lastname" className="form-control" id="lastname" onChange={this.handleChange} value={currentSalarie.nom} required />
+                    <input type="text" name="lastname" className="form-control" id="lastname" onChange={this.handleChange} value={currentSalarie.nom === null ? "" : currentSalarie.nom} required />
                     <span style={{color: "red"}}>{this.state.errors["lastname"]}</span>
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="firstname">Prénom *</label>
-                    <input type="text" name="firstname" className="form-control" id="firstname" onChange={this.handleChange} value={currentSalarie.prenom} required />
+                    <input type="text" name="firstname" className="form-control" id="firstname" onChange={this.handleChange} value={currentSalarie.prenom === null ? "" : currentSalarie.prenom} required />
                   </div>
                 </div>
               </div>
@@ -317,29 +303,14 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="email">Email *</label>
-                    <input type="email" name="email" className="form-control" id="email" onChange={this.handleChange} value={currentSalarie.email} required />
+                    <input type="email" name="email" className="form-control" id="email" onChange={this.handleChange} value={currentSalarie.email === null ? "" : currentSalarie.email} required />
                     <span style={{color: "red"}}>{this.state.errors["email"]}</span>
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="dayOfBirth">Date de naissance *</label>
-                    <input type="date" name="birthday" className="form-control" id="dayOfBirth" onChange={this.handleChange} value={currentSalarie.dateNaissance} required />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="password">Mot de passe *</label>
-                    <input type="password" name="password" className="form-control" id="password" onChange={this.handleChange} required  />
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="passwordC">Confirmation du mot de passe *</label>
-                    <input type="password" name="passwordC" className="form-control" id="passwordC" onChange={this.handleChange} required  />
-                    <span style={{color: "red"}}>{this.state.errors["passwordMatch"]}</span>
+                    <input type="date" name="birthday" className="form-control" id="dayOfBirth" onChange={this.handleChange} value={currentSalarie.dateNaissance  === null ? "" : currentSalarie.dateNaissance} required />
                   </div>
                 </div>
               </div>
@@ -347,13 +318,13 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="phonePerso">Tél. perso</label>
-                    <input type="text" name="phonePerso" className="form-control" id="phonePerso" value={currentSalarie.telPersonnel} onChange={this.handleChange} />
+                    <input type="text" name="phonePerso" className="form-control" id="phonePerso" value={currentSalarie.telPersonnel === null ? "" : currentSalarie.telPersonnel} onChange={this.handleChange} />
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="phoneMPerso">Tél. Mobile perso</label>
-                    <input type="text" name="phoneMPerso" className="form-control" id="phoneMPerso" value={currentSalarie.mobilPersonnel} onChange={this.handleChange}/>
+                    <input type="text" name="phoneMPerso" className="form-control" id="phoneMPerso" value={currentSalarie.mobilPersonnel === null ? "" : currentSalarie.mobilPersonnel} onChange={this.handleChange}/>
                   </div>
                 </div>
               </div>
@@ -361,13 +332,13 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="phonePro">Tél. pro</label>
-                    <input type="text" name="phonePro" className="form-control" id="phonePro" value={currentSalarie.telProfessionnel} onChange={this.handleChange} />
+                    <input type="text" name="phonePro" className="form-control" id="phonePro" value={currentSalarie.telProfessionnel === null ? "" : currentSalarie.telProfessionnel } onChange={this.handleChange} />
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="phoneMPro">Tél. Mobile pro</label>
-                    <input type="text" name="phoneMPro" className="form-control" id="phoneMPro" value={currentSalarie.mobileProfessionnel} onChange={this.handleChange}/>
+                    <input type="text" name="phoneMPro" className="form-control" id="phoneMPro" value={currentSalarie.mobileProfessionnel === null ? "" : currentSalarie.mobileProfessionnel} onChange={this.handleChange}/>
                   </div>
                 </div>
               </div>
@@ -375,7 +346,7 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="adresse">Adresse *</label>
-                    <CSelect custom name="adresse" id="adresse" onChange={this.handleChange} value={currentSalarie.adresse.id} required>
+                    <CSelect custom name="adresse" id="adresse" onChange={this.handleChange} value={currentSalarie.adresse.id === null ? 0 : currentSalarie.adresse.id} required>
                       <option value="0">Veuillez sélectionner une adresse</option>
                       {adresses.map((adresse, key) => (
                         <option key={key}  value={adresse.id}>
@@ -394,7 +365,7 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                 <div className="form-group">
                     <label htmlFor="domain">Domaine</label>
-                    <CSelect custom name="domain" id="domain" value={currentSalarie.domaine.id} onChange={this.handleChange}>
+                    <CSelect custom name="domain" id="domain" value={currentSalarie.domaine.id === null ? 0 : currentSalarie.domaine.id} onChange={this.handleChange}>
                       <option value="0">Veuillez sélectionner un domaine</option>
                       {domains.map((domain, key) => (
                         <option key={key} value={domain.id}>
@@ -409,7 +380,7 @@ import SalariesService from "../../services/salaries.service";
                 <div className="col">
                 <div className="form-group">
                     <label htmlFor="company">Entreprise</label>
-                    <CSelect custom name="company" id="company" value={currentSalarie.entreprise.id} onChange={this.handleChange}>
+                    <CSelect custom name="company" id="company" value={currentSalarie.entreprise.id === null ? 0 : currentSalarie.entreprise.id} onChange={this.handleChange}>
                       <option value="0">Veuillez sélectionner une entreprise</option>
                       {companies.map((company, key) => (
                         <option key={key} value={company.id}>
@@ -427,7 +398,7 @@ import SalariesService from "../../services/salaries.service";
                   <Select 
                   name="skills"
                   placeholder="Liste des compétences"
-                  value={currentSalarie.competences}
+                  value={currentSalarie.competences === null ? "" : currentSalarie.competences}
                   getOptionLabel={option => option.nom}
                   getOptionValue={option => option.id}
                   options={skills.map(e => ({ nom: e.nom, id: e.id}))}
@@ -444,7 +415,7 @@ import SalariesService from "../../services/salaries.service";
                     <Select 
                       name="roles"
                       placeholder="Liste des rôles"
-                      value={this.state.currentSalarie.roles}
+                      value={currentSalarie.roles === null ? "" : currentSalarie.roles }
                       getOptionLabel={option => option.titre}
                       getOptionValue={option => option.id}
                       options={roles.map(e => ({ titre: e.titre, id: e.id}))}
@@ -454,10 +425,10 @@ import SalariesService from "../../services/salaries.service";
                   </div>
                 </div>
               </div>
-            </form>
-            <CButton type="submit" block  color="info">
+              <CButton type="submit" block  color="info">
                 Ajout d'un salarié
             </CButton>
+            </form>
             </div>
         </div>
         )
