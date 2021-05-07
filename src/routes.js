@@ -8,6 +8,7 @@ const User = React.lazy(() => import('./views/users/User'));
 const AllSalaries = React.lazy(() => import('./views/salaries/listSalarie'));
 const AddSalarie = React.lazy(() => import('./views/salaries/addSalarie'));
 const ProfilSalarie = React.lazy(() => import('./views/salaries/profilSalarie'));
+const UpdateSalarie = React.lazy(() => import('./views/salaries/updateSalarie'));
 const AllAdresses = React.lazy(() => import('./views/adresses/allAdresses'));
 const Adresse = React.lazy(() => import('./views/adresses/Adresse'));
 //const UpdateAdresse = React.lazy(() => import('./views/adresses/Adresse'))
@@ -29,9 +30,13 @@ const CreateCompetence = React.lazy(() => import('./views/competence/creation-co
 const UpdateCompetence = React.lazy(() => import('./views/competence/modification-competence'));
 const AllTitrePoste = React.lazy(() => import('./views/titre-poste/allTitrePoste'));
 const CreateTitrePoste = React.lazy(() => import('./views/titre-poste/creation-titre-poste'));
+const ListFormation = React.lazy(() => import('./views/formation/listFormation'));
+const Formation = React.lazy(() => import('./views/formation/formation'));
+const CreateFormation = React.lazy(() => import('./views/formation/createFormation'));
 const UpdateTitrePoste = React.lazy(() => import('./views/titre-poste/modification-titre-poste'));
 const AllPoste = React.lazy(() => import('./views/poste/listPoste'));
 const CreatePoste = React.lazy(() => import('./views/poste/creation-poste'));
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home', component: Dashboard },
@@ -42,6 +47,7 @@ const routes = [
   { path: '/salaries/liste', name: 'Listes des salaries', component: AllSalaries },
   { path: '/salaries/creation', name: 'Ajout dun salarie', component: AddSalarie },
   { path: '/salaries/profil/:id', exact: true, name: 'Profil', component: ProfilSalarie },
+  { path: '/salaries/modification/:id', exact: true, name: 'Modification d\'un salarié', component: UpdateSalarie },
   { path: '/adresses', exact: true, name: 'Adresses', component: AllAdresses },
   { path: '/adresses/liste',exact: true, name: 'Listes des adresses', component: AllAdresses },
   { path: '/adresses/modification/:id',exact: true, name: 'Modification adresse', component: Adresse },
@@ -68,6 +74,9 @@ const routes = [
   { path: '/titre-poste', exact: true, name: 'Intilulés de poste', component: AllTitrePoste },
   { path: '/titre-poste/liste',exact: true, name: 'Liste des intitulés de poste', component: AllTitrePoste },
   { path: '/titre-poste/creation',exact: true, name: 'Creation d\'un intitulé de poste', component: CreateTitrePoste },
+  { path: '/formations', exact: true, name: 'Listes des formations', component: ListFormation },
+  { path: '/formations/voir/:id', exact: true, name: 'Formation', component: Formation },
+  { path: '/formations/creation',exact: true, name: 'Creation d\'une formation', component: CreateFormation },
   { path: '/titre-poste/modification/:id',exact: true, name: 'Modification d\'un intitulé de poste', component: UpdateTitrePoste },
   { path: '/poste', exact: true, name: 'Postes', component: AllPoste },
   { path: '/poste/liste',exact: true, name: 'Liste des postes', component: AllPoste },

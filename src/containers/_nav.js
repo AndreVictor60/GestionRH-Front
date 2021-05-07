@@ -69,7 +69,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Type de contrat',
     route: '/type-contrat',
-    icon: 'cil-puzzle',
+    icon: 'cil-spreadsheet',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -87,7 +87,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Domaine',
     route: '/domaine',
-    icon: 'cil-puzzle',
+    icon: 'cil-people',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -105,7 +105,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Rôle',
     route: '/role',
-    icon: 'cil-puzzle',
+    icon: 'cil-badge',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -123,7 +123,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Compétences',
     route: '/competence',
-    icon: 'cil-puzzle',
+    icon: 'cil-school',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -141,7 +141,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Intitulés de poste',
     route: '/titre-poste',
-    icon: 'cil-puzzle',
+    icon: 'cil-bookmark',
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -154,6 +154,24 @@ const _nav =  [
         to: '/titre-poste/creation',
       }
     ],
+  },
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Formations',
+    route: '/formations',
+    icon: 'cil-bookmark',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Liste des formations',
+        to: '/formations',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Création d\'une formation',
+        to: '/formations/creation',
+      }
+      ],
   },
   {
     _tag: 'CSidebarNavDropdown',
@@ -184,7 +202,7 @@ const _nav =  [
     _tag: 'CSidebarNavDropdown',
     name: 'Pages',
     route: '/pages',
-    icon: 'cil-star',
+    icon: 'cil-bookmark',
     _children: [
       {
         _tag: 'CSidebarNavItem',
