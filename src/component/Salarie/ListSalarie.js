@@ -1,17 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import SalariesService from "../../services/salaries.service";
-
-function compareDateStringWithDateCurrent(string){
-  let datePoste = new Date(string).getTime();
-  let dateCurrent = new Date().getTime();
-  if(datePoste < dateCurrent){
-    return false;
-  }else{
-    return true;
-  }
-}
-
+import { compareDateStringWithDateCurrent } from '../../utils/fonctions';
 class ListSalarie extends Component {
     constructor(props) {
       super(props);

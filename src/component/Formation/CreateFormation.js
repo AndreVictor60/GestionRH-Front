@@ -5,6 +5,7 @@ import Select from "react-select";
 import competenceService from "src/services/competence.service";
 import domaineService from "src/services/domaine.service";
 import formationsService from "src/services/formations.service";
+import { compareDateStringWithDateCurrent, compareTwoDateString } from "src/utils/fonctions";
 
 export class CreateFormation extends Component {
   constructor(props) {
@@ -14,16 +15,25 @@ export class CreateFormation extends Component {
     this.onChangeSkills = this.onChangeSkills.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.saveTraining = this.saveTraining.bind(this);
+    this.validationForm = this.validationForm.bind(this);
     this.state = {
       currentErrors: {
         title: null,
+        titleBool: true,
         duration: null,
+        durationBool: true,
         price: null,
+        priceBool: true,
         startDate: null,
+        startDateBool: true,
         endDate: null,
+        endDateBool: true,
         domain: null,
+        domainBool: true,
         skill: null,
+        skillBool: true
       },
+      validateForm: false,
       domains: [],
       skills: [],
       currentFormation: {
@@ -43,7 +53,6 @@ export class CreateFormation extends Component {
   }
 
   handleChange(e) {
-    let errors = {};
     const target = e.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
@@ -54,18 +63,14 @@ export class CreateFormation extends Component {
       if (value === "" || value === null || value.length === 0) {
           console.log("title est null")
         this.setState((prevState) => ({
-          currentFormation: {
-            ...prevState.currentFormation,
-            titre: value
-          },
           currentErrors: {
             ...prevState.currentErrors,
             title: "Le champ nom est requis.",
+            titleBool: true,
           }
         }));
       } else {
         this.setState((prevState) => ({
-
           currentFormation: {
             ...prevState.currentFormation,
             titre: value
@@ -73,103 +78,199 @@ export class CreateFormation extends Component {
           currentErrors: {
             ...prevState.currentErrors,
             title: null,
+            titleBool: false
           }
         }));
       }
     }
 
     if (name === "duration") {
-        /**
-         * TODO: Vérification de la longueur
-         * TODO: Vérification du négatif
-         * TODO: Vérification si c'est un nombre
-         */
       if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-            currentFormation: {
-              ...prevState.currentFormation,
-              duree: value
-            },
             currentErrors: {
               ...prevState.currentErrors,
               duration: "Le champ durée est requis.",
+              durationBool: true,
             }
           }));
       } else {
-        this.setState((prevState) => ({
+        if(value <= 0){
+          this.setState((prevState) => ({
+            currentErrors: {
+              ...prevState.currentErrors,
+              duration: "Le durée ne peut être inférieur à zero.",
+              durationBool: true,
+            }
+          }));
+        }else{
+          this.setState((prevState) => ({
             currentErrors: {
                 ...prevState.currentErrors,
                 duration: null,
+                durationBool: false,
             },
             currentFormation: {
                 ...prevState.currentFormation,
                 duree: value,
             },
         }));
+        }
+
       }
     }
 
     if (name === "price") {
         /**
          * TODO: Impossible d'être négatif
-         * TODO: Vérification si c'est un nombre
          */
-      if (value !== "" || value !== null || value.length !== 0) {
+      if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentFormation: {
-            ...prevState.currentFormation,
-            prix: value,
-          },
+          currentErrors:{
+            ...prevState.currentErrors,
+            price : "Le champ prix est requis.",
+            priceBool: true
+          }
         }));
+      }else{
+        if(value <= 0){
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              price : "Le prix ne peut être inférieur à zero.",
+              priceBool: true
+            }
+          }));
+        }else{
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              price : null,
+              priceBool: false
+            },
+            currentFormation: {
+              ...prevState.currentFormation,
+              prix: value,
+            },
+          }));
+        }
       }
     }
 
     /**
      * TODO: Vérification de la date
-     * TODO: Vérification si la date n'est pas inférieur a la date actuelle
      */
     if (name === "startDate") {
-      if (value !== "" || value !== null || value.length !== 0) {
+      if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentFormation: {
-            ...prevState.currentFormation,
-            dateDebut: value,
-          },
+          currentErrors:{
+            ...prevState.currentErrors,
+            startDate: "Le champ date début est requis.",
+            startDateBool : true,
+          }
         }));
+      }else{
+        if(!compareDateStringWithDateCurrent(value)){
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              startDate: "La date doit être ultérieure à la date du jour.",
+              startDateBool : true,
+            }
+          }));
+        }else{
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              startDate: null,
+              startDateBool : false,
+            },
+            currentFormation: {
+              ...prevState.currentFormation,
+              dateDebut: value,
+            },
+          }));
+        }
       }
     }
 
     /**
      * TODO: Vérification de la date
-     * TODO: Vérification si la date n'est pas inférieur a la startDate && par rapport a la durée
+     * TODO: Vérification par rapport a la durée
      */
     if (name === "endDate") {
-      if (value !== "" || value !== null || value.length !== 0) {
+      if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentFormation: {
-            ...prevState.currentFormation,
-            dateFin: value,
-          },
+          currentErrors:{
+            ...prevState.currentErrors,
+            endDate: "Le champ date de fin est requis.",
+            endDateBool: true
+          }
         }));
+      }else{
+        console.log(compareTwoDateString(this.state.currentFormation.dateDebut,value))
+        if(compareTwoDateString(this.state.currentFormation.dateDebut,value) === "+" || compareTwoDateString(this.state.currentFormation.dateDebut,value) === "=" ){
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              endDate: "Le date de fin ne peut être inférieur ou égal a la date de début.",
+              endDateBool: true
+            }
+          }));
+        }else{
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              endDate: null,
+              endDateBool: false
+            },
+            currentFormation: {
+              ...prevState.currentFormation,
+              dateFin: value,
+            },
+          }));
+        }
+       
       }
     }
     /**
-     * TODO: Required
      * TODO: Vérification si le domaine existe
      */
     if (name === "domain") {
-      if (0 !== value || value !== "" || value !== null || value.length !== 0) {
+      console.log(value);
+      if (value === "0" || value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentFormation: {
-            ...prevState.currentFormation,
-            domaine: {
-              id: value,
-            },
-          },
+          currentErrors:{
+            ...prevState.currentErrors,
+            domain: "Le champ domaine est requis.",
+            domainBool: true
+          }
         }));
+      }else{
+        if(this.state.domains.find(e => e.id === parseInt(value)) === undefined){
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              domain: "Veuillez sélectionner un domaine qui existe.",
+              domainBool: true
+            }
+          }));
+        }else{
+          this.setState((prevState) => ({
+            currentErrors:{
+              ...prevState.currentErrors,
+              domain: null,
+              domainBool: false
+            },
+            currentFormation: {
+              ...prevState.currentFormation,
+              domaine: {
+                id: value,
+              },
+            },
+          }));
+        }
       }
     }
-    this.setState({ errors: errors });
   }
 
   componentDidMount() {
@@ -181,13 +282,41 @@ export class CreateFormation extends Component {
       /**
        * TODO: Required min 1
        */
-    console.log("e", e);
-    this.setState((prevState) => ({
-      currentFormation: {
-        ...prevState.currentFormation,
-        competences: e,
-      },
-    }));
+      console.log(e.length)
+    if(e.length === 0){
+      this.setState((prevState) => ({
+        currentErrors:{
+          ...prevState.currentErrors,
+          skill: "Veuillez séléctionner au moins une compétences",
+          skillBool: true
+        },
+        currentFormation: {
+          ...prevState.currentFormation,
+          competences: e,
+        },
+      }));
+    }else{
+      this.setState((prevState) => ({
+        currentErrors:{
+          ...prevState.currentErrors,
+          skill: null,
+          skillBool: false
+        },
+        currentFormation: {
+          ...prevState.currentFormation,
+          competences: e,
+        },
+      }));
+    }
+  }
+
+  validationForm(){
+    const { currentErrors } = this.state;
+    if(!currentErrors.durationBool && !currentErrors.startDateBool && !currentErrors.endDateBool && !currentErrors.domainBool && !currentErrors.titleBool && !currentErrors.skillBool && !currentErrors.priceBool){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   getAllDomaines() {
@@ -213,19 +342,22 @@ export class CreateFormation extends Component {
   }
 
   saveTraining(e) {
-    e.preventDefault();
+   e.preventDefault();
+   if(this.validationForm()){
     const json = JSON.stringify(this.state.currentFormation)
-      .split('"value":')
-      .join('"id":');
-    const data = JSON.parse(json);
-    formationsService
-      .save(data)
-      .then((resp) => {
-        console.log(resp);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    .split('"value":')
+    .join('"id":');
+  const data = JSON.parse(json);
+  formationsService.save(data)
+    .then((resp) => {
+      this.props.history.push("/formations");
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+   }else{
+     console.log("Des erreurs présents");
+   }
   }
 
   render() {
@@ -271,13 +403,14 @@ export class CreateFormation extends Component {
                 <div className="form-group">
                   <label htmlFor="price">Prix *</label>
                   <input
-                    type="text"
+                    type="number"
                     name="price"
                     className="form-control"
                     id="price"
                     onChange={this.handleChange}
                     required
                   />
+                  <span className="text-danger">{currentErrors.price}</span>
                 </div>
               </div>
             </div>
@@ -296,6 +429,7 @@ export class CreateFormation extends Component {
                     onChange={this.handleChange}
                     required
                   />
+                  <span className="text-danger">{currentErrors.startDate}</span>
                 </div>
               </div>
               <div className="col">
@@ -312,6 +446,7 @@ export class CreateFormation extends Component {
                     onChange={this.handleChange}
                     required
                   />
+                  <span className="text-danger">{currentErrors.endDate}</span>
                 </div>
               </div>
             </div>
@@ -324,6 +459,7 @@ export class CreateFormation extends Component {
                     name="domain"
                     id="domain"
                     onChange={this.handleChange}
+                    required
                   >
                     <option value="0">Veuillez sélectionner un domaine</option>
                     {domains.map((domain, key) => (
@@ -332,6 +468,7 @@ export class CreateFormation extends Component {
                       </option>
                     ))}
                   </CSelect>
+                  <span className="text-danger">{currentErrors.domain}</span>
                 </div>
               </div>
             </div>
@@ -352,6 +489,7 @@ export class CreateFormation extends Component {
                     onChange={this.onChangeSkills}
                     isMulti
                   />
+                  <span className="text-danger">{currentErrors.skill}</span>
                 </div>
               </div>
             </div>
