@@ -1,6 +1,8 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import Select from 'react-select';
 import CompetenceService from "../../services/competence.service";
+import domaineService from "src/services/domaine.service";
 
 export default class UpdateCompetence extends Component {
   constructor(props) {
@@ -10,10 +12,14 @@ export default class UpdateCompetence extends Component {
     this.getCompetence = this.getCompetence.bind(this);
 
     this.state = {
-        currentCompetence: {
-            id: null,
-            nom: ""
-      },
+      domaines: [],
+      currentCompetence: {
+       id: null,
+       nom: "",
+       domaines:{
+         id: null
+       }
+     },
       message: "",
       ifError: null
     };
@@ -21,6 +27,7 @@ export default class UpdateCompetence extends Component {
 
   componentDidMount() {
    this.getCompetence(this.props.competenceId.id);
+   this.getDomaine();
   }
   onChangeCompetence(e){
     const competence = e.target.value;
@@ -55,7 +62,8 @@ export default class UpdateCompetence extends Component {
   }
 
 
-  updateCompetence() {
+  updateCompetence(e) {
+    e.preventDefault();
     CompetenceService.updateCompetence(
       this.state.currentCompetence
     )
@@ -67,7 +75,7 @@ export default class UpdateCompetence extends Component {
             ifError: false
         });
         //redirection vers liste des rôles
-        this.redirectionApresValidation();
+        //this.redirectionApresValidation();
       })
       .catch(e => {
         this.setState({
@@ -78,22 +86,61 @@ export default class UpdateCompetence extends Component {
       });
   }
 
+  getDomaine() {
+    domaineService.getAllDomaine()
+    .then(response => {
+      this.setState({
+        domaines: response.data
+      });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
+  onChangeDomaine(e) {
+  /**
+   * TODO: Required min 1
+   */
+  console.log(e.length)
+
+  this.setState((prevState) => ({
+    currentCompetence: {
+      ...prevState.currentCompetence,
+      domaines: e,
+    },
+  }));
+  }
 
   render() {
-    const { currentCompetence, ifError } = this.state;
+    const { currentCompetence, domaines, ifError } = this.state;
 
     return (
       <div>
           <div className="edit-form">
-            <form>
+            <form name="updateCompetenceForm" onSubmit={this.updateCompetence}>
               <div className="form-group">
                 <label htmlFor="nom">Nom de la compétence</label>
                 <input type="text" className="form-control" id="nom" value={currentCompetence.nom} onChange={this.onChangeCompetence}/>
               </div>
-            </form>
-            <CButton type="submit" block  color="info" onClick={this.updateCompetence}>
+              <div className="form-group">
+                <label htmlFor="skills">Domaines *</label>
+                <Select 
+                  name="domaines"
+                  placeholder="Liste des domaines"
+                  value={currentCompetence.domaine}
+                  options={domaines.map(e => ({ label: e.titre, value: e.id}))}
+                  onChange={this.onChangeDomaine}
+                  isMulti
+                  required
+                />
+              </div>
+              <CButton type="submit" block  color="info">
                 Modifier
-            </CButton>
+              </CButton>
+            </form>
+            
           </div>
           {ifError != null ? ifError ? <CAlert color="danger">{this.state.message}</CAlert> : <CAlert color="success">{this.state.message}</CAlert> : <CAlert></CAlert>}
       </div>

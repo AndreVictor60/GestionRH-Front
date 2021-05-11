@@ -12,7 +12,7 @@ class ListCompetence extends Component {
         this.state = {
           competences: [],
           currentPage: 0,
-          sizePage: 2,
+          sizePage: 10,
           nbTotalCompetence: null,
           nbTotalPage: null
         };
@@ -37,7 +37,7 @@ class ListCompetence extends Component {
     }
 
     retrieveCompetence(pageNum) {
-        CompetenceService.getAllComptenceByPage(pageNum,2)
+        CompetenceService.getAllComptenceByPage(pageNum,this.state.sizePage)
         .then(response => {
           this.setState({
             competences: response.data
@@ -94,7 +94,8 @@ class ListCompetence extends Component {
               <table className="table table-hover table-striped table-bordered">
                 <thead>
                   <tr>
-                      <th>Nom</th>
+                      <th>Compétence</th>
+                      <th>Domaine</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -102,6 +103,7 @@ class ListCompetence extends Component {
                   {competences.map( competence => 
                       <tr key={competence.id}>
                           <td>{competence.nom}</td>
+                          <td>{competence.domaines.map(domaine => domaine.titre + ", ")}</td>
                           <td><Link to={"/competence/modification/" + competence.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(competence)}>Supprimer</Link></td>
                       </tr>
                     )}

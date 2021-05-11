@@ -1,18 +1,26 @@
 import { CButton, CAlert } from "@coreui/react";
 import React, { Component } from "react";
 import ComptenceService from "../../services/competence.service";
+import Select from 'react-select';
+import domaineService from "src/services/domaine.service";
+import { withRouter } from "react-router-dom";
 
-export default class CreateCompetence extends Component {
+class CreateCompetence extends Component {
   constructor(props) {
     super(props);
     this.onChangeCompetence = this.onChangeCompetence.bind(this);
     this.CreateCompetence = this.CreateCompetence.bind(this);
-    this.getCompetence = this.getCompetence.bind(this);
+    this.getDomaine = this.getDomaine.bind(this);
+    this.onChangeDomaine = this.onChangeDomaine.bind(this);
 
     this.state = {
-        currentCompetence: {
+      domaines: [],
+       currentCompetence: {
         id: null,
-        nom: ""
+        nom: "",
+        domaines:{
+          id: null
+        }
       },
       message: "",
       ifError: null
@@ -20,7 +28,7 @@ export default class CreateCompetence extends Component {
   }
 
   componentDidMount() {
-   
+    this.getDomaine();
   }
   onChangeCompetence(e){
     const comptepence = e.target.value;
@@ -34,31 +42,41 @@ export default class CreateCompetence extends Component {
       };
     });
   }
-  
-  getCompetence(id) {
-    ComptenceService.getCompetenceById(id)
-      .then(response => {
-        this.setState({
-            currentCompetence: response.data
-        });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
+
+  getDomaine() {
+    domaineService.getAllDomaine()
+    .then(response => {
+      this.setState({
+        domaines: response.data
       });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
   }
 
-  redirectionApresValidation(){
-    setTimeout(function() {
-      window.location.replace('/competence/liste');
-    }, 1000);
+  onChangeDomaine(e) {
+  /**
+   * TODO: Required min 1
+   */
+  console.log(e.length)
+
+  this.setState((prevState) => ({
+    currentCompetence: {
+      ...prevState.currentCompetence,
+      domaines: e,
+    },
+  }));
   }
 
-  CreateCompetence() {
+  CreateCompetence(e) {
+    e.preventDefault();
     console.log("reponse : ",this.state.currentCompetence);
-    ComptenceService.saveCompetence(
-      this.state.currentCompetence
-    )
+    const json = JSON.stringify(this.state.currentCompetence).split('"value":').join('"id":');
+    console.log("reponse json : ",json);
+    const data = JSON.parse(json);
+    ComptenceService.saveCompetence( data )
       .then(response => {
         //console.log("reponse : ",response.data);
         this.setState({
@@ -66,8 +84,7 @@ export default class CreateCompetence extends Component {
             message: "Création bien prise en compte ! Redirection vers la liste de compétence.",
             ifError: false
         });
-        //redirection vers liste des rôles
-        this.redirectionApresValidation();
+        this.props.history.push("/competence/liste");
       })
       .catch(e => {
         this.setState({
@@ -79,23 +96,39 @@ export default class CreateCompetence extends Component {
   }
 
   render() {
-    const { currentCompetence, ifError } = this.state;
+    const { currentCompetence, domaines, ifError } = this.state;
 
     return (
       <div>
           <div className="edit-form">
-            <form>
+            <form name="createCompetenceForm" onSubmit={this.CreateCompetence}>
               <div className="form-group">
                 <label htmlFor="nom">Créer une nouvelle compétence</label>
                 <input type="text" className="form-control" id="nom" value={currentCompetence.nom} onChange={this.onChangeCompetence}/>
               </div>
-            </form>
-            <CButton type="submit" block  color="info" onClick={this.CreateCompetence}>
+              
+              <div className="form-group">
+                <label htmlFor="skills">Domaines *</label>
+                <Select 
+                  name="domaines"
+                  placeholder="Liste des domaines"
+                  value={currentCompetence.domaine}
+                  options={domaines.map(e => ({ label: e.titre, value: e.id}))}
+                  onChange={this.onChangeDomaine}
+                  isMulti
+                  required
+                />
+              </div>
+              <CButton type="submit" block  color="info">
                 Créer
-            </CButton>
+              </CButton>
+            </form>
+            
           </div>
           {ifError != null ? ifError ? <CAlert color="danger">{this.state.message}</CAlert> : <CAlert color="success">{this.state.message}</CAlert> : <CAlert></CAlert>}
       </div>
     );
   }
 }
+
+export default withRouter(CreateCompetence);

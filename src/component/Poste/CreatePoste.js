@@ -8,6 +8,7 @@ import CompetenceService from "../../services/competence.service";
 import TypeContratService from "../../services/type-contrat.service";
 import EntrepriseService from "../../services/entreprises.service";
 import Select from 'react-select';
+import { compareDateStringWithDateCurrent, ifNumber } from "src/utils/fonctions";
 class CreatePoste extends Component {
     constructor(props){
         super(props);
@@ -29,7 +30,7 @@ class CreatePoste extends Component {
         this.savePoste = this.savePoste.bind(this);
 
         this.state = {
-            errors: {dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null},
+            errors: {dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null, dateInfAujDHui: null},
             salaries: [],
             titresPoste: [],
             typesContrat: [],
@@ -76,8 +77,6 @@ class CreatePoste extends Component {
         this.getAllCompetence();
         this.getAllMaitreApprentissage();
     }
-
-    
 
     onChangeSalarie(e) {
       const idSalarie = e.target.value;
@@ -177,17 +176,54 @@ class CreatePoste extends Component {
     onChangeDateDebut(e) {
       const dateDebut = e.target.value;
       if (0 !== dateDebut.length) {
-        this.setState((prevState) => ({
-        currentPoste: {
-            ...prevState.currentPoste,
-            dateDebut: dateDebut,
-        },
-        errors: {
-          ...prevState.errors,
-          dateFinInf: null,
+        if(compareDateStringWithDateCurrent(dateDebut)){
+          this.setState((prevState) => ({
+          currentPoste: {
+              ...prevState.currentPoste,
+              dateDebut: dateDebut,
+          },
+          errors: {
+            ...prevState.errors,
+            dateFinInf: null,
+          }
+          }));
+          if(this.state.currentPoste.dateFin !== null && this.state.currentPoste.dateFin<dateDebut)
+          {
+              this.setState((prevState) => ({
+              errors: {
+                  ...prevState.errors,
+                  dateFinInf: "La date de fin ne doit pas être inferieur à la date de début.",
+              }
+            }));
+          }
         }
-        }));
-        if(this.state.currentPoste.dateFin !== null && this.state.currentPoste.dateFin<dateDebut)
+        else{
+          this.setState((prevState) => ({
+            errors: {
+                ...prevState.errors,
+                dateInfAujDHui: "La date ne peut pas être inferieur à aujourd'hui.",
+            }
+          }));
+        }
+      }
+    }
+    
+    onChangeDateFin(e) {
+      const dateFin = e.target.value;
+      if (0 !== dateFin.length) {
+        if(compareDateStringWithDateCurrent(dateFin)){
+          this.setState((prevState) => ({
+          currentPoste: {
+              ...prevState.currentPoste,
+              dateFin: dateFin,
+          },
+          errors: {
+            ...prevState.errors,
+            dateFinInf: null,
+          }
+          }));
+        }
+        if(this.state.currentPoste.dateDebut !== null && this.state.currentPoste.dateDebut>dateFin)
         {
             this.setState((prevState) => ({
             errors: {
@@ -197,29 +233,11 @@ class CreatePoste extends Component {
           }));
         }
       }
-
-     }
-    
-    onChangeDateFin(e) {
-      const dateFin = e.target.value;
-      if (0 !== dateFin.length) {
+      else{
         this.setState((prevState) => ({
-        currentPoste: {
-            ...prevState.currentPoste,
-            dateFin: dateFin,
-        },
-        errors: {
-          ...prevState.errors,
-          dateFinInf: null,
-        }
-        }));
-      }
-      if(this.state.currentPoste.dateDebut !== null && this.state.currentPoste.dateDebut>dateFin)
-      {
-          this.setState((prevState) => ({
           errors: {
               ...prevState.errors,
-              dateFinInf: "La date de fin ne doit pas être inferieur à la date de début.",
+              dateInfAujDHui: "La date ne peut pas être inferieur à aujourd'hui.",
           }
         }));
       }
@@ -227,9 +245,8 @@ class CreatePoste extends Component {
 
     onChangeVolumeHoraire(e) {
         const VolumeHoraire = e.target.value;
-        const re = /^[0-9\b]+$/;
         //console.log("VolumeHoraire : ",VolumeHoraire,"typehoraire (0H, 1J) : ",this.state.typeHoraire);
-        if(re.test(VolumeHoraire)){
+        if(ifNumber(VolumeHoraire)){
           if(VolumeHoraire>0){
             if(this.state.typeHoraire === 0){
                 this.setState((prevState) => ({
@@ -431,7 +448,6 @@ class CreatePoste extends Component {
     render() {
         const {salaries, titresPoste, typesContrat, entreprises, managers, competences, maitresApprentissage} = this.state;
         console.log(this.state.errors);
-        console.log("MA : ",maitresApprentissage);
         return (
             <div className="submit-form">
             <div>
@@ -484,7 +500,7 @@ class CreatePoste extends Component {
               <div className="row">
                 <div className="col">
                 <div className="form-group">
-                <label htmlFor="skills">Compétences</label>
+                <label htmlFor="skills">Compétences *</label>
                   <Select 
                   name="competences"
                   placeholder="Liste des compétences"
@@ -492,6 +508,7 @@ class CreatePoste extends Component {
                   options={competences.map(e => ({ label: e.nom, value: e.id}))}
                   onChange={this.onChangeCompetence}
                   isMulti
+                  required
                   />
                   </div>
                 </div>
@@ -511,6 +528,7 @@ class CreatePoste extends Component {
                 </div>
               </div>
               {this.state.errors.dateFinInf != null ? <CAlert color="danger">{this.state.errors.dateFinInf}</CAlert> : ""}
+              {this.state.errors.dateInfAujDHui != null ? <CAlert color="danger">{this.state.errors.dateInfAujDHui}</CAlert> : ""}
               <div className="row">
                 <div className="col">
                   <div className="form-group">

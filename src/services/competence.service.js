@@ -16,6 +16,9 @@ class CompetenceService {
   getCompetenceById(id) {
     return axios.get(API_URL + `/${id}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
   }
+  getCompetenceByIdDomaine(id) {
+    return axios.get(API_URL + `/domaine/${id}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+  }
   saveCompetence(data) {
     return axios.post(API_URL, data, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
   }

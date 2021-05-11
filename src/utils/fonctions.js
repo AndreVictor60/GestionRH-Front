@@ -19,3 +19,13 @@ export function compareDateStringWithDateCurrent(string){
         return "=";
     }
   }
+
+export function ifNumber(number){
+  const regex = /^[0-9\b]+$/;
+  if(regex.test(number)){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
