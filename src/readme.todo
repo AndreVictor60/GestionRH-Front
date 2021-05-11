@@ -6,6 +6,7 @@ Projects:
       ☐ CRUD Entretien 
       ☐ CRUD Compte Rendu
       ☐ Uniformiser les pages CRUD (message erreur, fautes, redirection, ...) @low
+      ☐ recherche de salarier pour un poste avec les compétences requises
       ✘
     Validation(message erreur):
       ✔ Formulaire Adresse
@@ -13,8 +14,8 @@ Projects:
       ✔ Formulaire Domaine
       ✔ Formulaire Entreprise
       ✔ Formulaire Formation
-      ☐ Formulaire Role
-      ☐ Formulaire Salarie
-      ☐ Formulaire TitrePoste
+      ✔ Formulaire Role
+      ✔ Formulaire Salarie
+      ✔ Formulaire TitrePoste
       ☐ Formulaire TypeContrat
     Done:

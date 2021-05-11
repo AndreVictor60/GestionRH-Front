@@ -284,7 +284,7 @@ class UpdateAdresse extends Component {
                 Modifier
               </CButton>
             </form>
-            {ifError != null ? ifError ? <CAlert color="danger">{message}</CAlert> : <CAlert color="success">{message}</CAlert> : <CAlert></CAlert>}
+            {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
           </div>
       </div>
     );

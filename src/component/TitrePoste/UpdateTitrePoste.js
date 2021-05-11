@@ -1,16 +1,20 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import TitrePosteService from "../../services/titre-poste.service";
 
-export default class UpdateTitrePoste extends Component {
+class UpdateTitrePoste extends Component {
   constructor(props) {
     super(props);
     this.onChangeTitrePoste = this.onChangeTitrePoste.bind(this);
     this.updateTitrePoste = this.updateTitrePoste.bind(this);
     this.getTitrePoste = this.getTitrePoste.bind(this);
-
     this.state = {
-        currentTitrePoste: {
+      currentErrors:{
+        intitule: null,
+        intituleBool: true
+      },
+      currentTitrePoste: {
         id: null,
         intitule: ""
       },
@@ -22,23 +26,34 @@ export default class UpdateTitrePoste extends Component {
   componentDidMount() {
    this.getTitrePoste(this.props.titrePosteId.id);
   }
+
   onChangeTitrePoste(e){
     const titrePoste = e.target.value;
-
-    this.setState(function(prevState) {
-      return {
+    if (titrePoste === "" || titrePoste === null || titrePoste.length === 0) {
+      this.setState((prevState) => ({
         currentTitrePoste: {
           ...prevState.currentTitrePoste,
-          intitule: titrePoste
+          intitule: titrePoste,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: "Le champ nom est requis.",
+          nameBool: true
         }
-      };
-    });
-  }
-
-  redirectionApresValidation(){
-    setTimeout(function() {
-      window.location.replace('/titre-poste/liste');
-    }, 1000);
+      }));
+    }else{
+      this.setState((prevState) => ({
+        currentTitrePoste: {
+          ...prevState.currentTitrePoste,
+          intitule: titrePoste,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: null,
+          titleBool: false
+        }
+      }));
+    }
   }
   
   getTitrePoste(id) {
@@ -54,11 +69,15 @@ export default class UpdateTitrePoste extends Component {
       });
   }
 
-
-  updateTitrePoste() {
-    TitrePosteService.updateTitrePoste(
-      this.state.currentTitrePoste
-    )
+  updateTitrePoste(e) {
+    e.preventDefault();
+    if(this.state.currentErrors.titleBool){
+      this.setState({
+        message: "Une erreur est présente dans votre formulaire.",
+        ifError: true
+      });
+    }else{
+      TitrePosteService.updateTitrePoste(this.state.currentTitrePoste)
       .then(response => {
         console.log(response.data);
         this.setState({
@@ -67,36 +86,37 @@ export default class UpdateTitrePoste extends Component {
             ifError: false
         });
         //redirection vers liste des rôles
-        this.redirectionApresValidation();
+        setTimeout(function() {window.location.replace('/titre-poste/liste');}, 1000);
       })
       .catch(e => {
         this.setState({
             message: e.message,
             ifError: true
           });
-        console.log(e);
       });
+    }
   }
 
-
   render() {
-    const { currentTitrePoste, ifError } = this.state;
-
+    const { currentTitrePoste,currentErrors, ifError, message } = this.state;
     return (
       <div>
           <div className="edit-form">
-            <form>
+            <form name="updateTitlePoste" onSubmit={this.updateTitrePoste}>
               <div className="form-group">
                 <label htmlFor="intitule">Nom de l'intitulé du poste</label>
-                <input type="text" className="form-control" id="intitule" value={currentTitrePoste.intitule} onChange={this.onChangeTitrePoste}/>
+                <input type="text" name="intitule" className="form-control" id="intitule" value={currentTitrePoste.intitule} onChange={this.onChangeTitrePoste}/>
+                <span className="text-danger">{currentErrors.intitule}</span>
               </div>
-            </form>
-            <CButton type="submit" block  color="info" onClick={this.updateTitrePoste}>
+              <CButton type="submit" block  color="info">
                 Modifier
-            </CButton>
+              </CButton>
+            </form>
           </div>
-          {ifError != null ? ifError ? <CAlert color="danger">{this.state.message}</CAlert> : <CAlert color="success">{this.state.message}</CAlert> : <CAlert></CAlert>}
+          {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
       </div>
     );
   }
 }
+
+export default withRouter(UpdateTitrePoste);

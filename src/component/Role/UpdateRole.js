@@ -1,18 +1,22 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import RoleService from "../../services/role.service";
 
-export default class UpdateRole extends Component {
+class UpdateRole extends Component {
   constructor(props) {
     super(props);
     this.onChangeRole = this.onChangeRole.bind(this);
     this.updateRole = this.updateRole.bind(this);
     this.getRole = this.getRole.bind(this);
-
     this.state = {
+      currentErrors:{
+        title: null,
+        titleBool: true
+      },
         currentRole: {
-          id: null,
-          titre: ""
+        id: 0,
+        titre: ""
       },
       message: "",
       ifError: null
@@ -22,23 +26,34 @@ export default class UpdateRole extends Component {
   componentDidMount() {
    this.getRole(this.props.roleId.id);
   }
+
   onChangeRole(e){
     const role = e.target.value;
-
-    this.setState(function(prevState) {
-      return {
+    if (role === "" || role === null || role.length === 0) {
+      this.setState((prevState) => ({
         currentRole: {
           ...prevState.currentRole,
-          titre: role
+          titre: role,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: "Le champ nom est requis.",
+          nameBool: true
         }
-      };
-    });
-  }
-
-  redirectionApresValidation(){
-    setTimeout(function() {
-      window.location.replace('/role/liste');
-    }, 1000);
+      }));
+    }else{
+      this.setState((prevState) => ({
+        currentRole: {
+          ...prevState.currentRole,
+          titre: role,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: null,
+          titleBool: false
+        }
+      }));
+    }
   }
   
   getRole(id) {
@@ -47,7 +62,6 @@ export default class UpdateRole extends Component {
         this.setState({
             currentRole: response.data
         });
-        console.log(response.data);
       })
       .catch(e => {
         console.log(e);
@@ -55,48 +69,57 @@ export default class UpdateRole extends Component {
   }
 
 
-  updateRole() {
-    RoleService.updateRole(
-      this.state.currentRole
-    )
+  updateRole(e) {
+    e.preventDefault();
+    console.log("condition",this.state.currentErrors.titleBool)
+    if(this.state.currentErrors.titleBool){
+      console.log("dans le if");
+      this.setState({
+        message: "Une erreur est présente dans votre formulaire.",
+        ifError: true
+      });
+    }else{
+      RoleService.updateRole(this.state.currentRole)
       .then(response => {
         console.log(response.data);
         this.setState({
             currentRole: response.data,
-            message: 'Modification bien prise en compte !',
+            message: 'Modification bien prise en compte ! Redirection vers la liste de role.',
             ifError: false
         });
-        //redirection vers liste des rôles
-        this.redirectionApresValidation();
+        window.setTimeout(() => {this.props.history.push("/role/liste")}, 3000);
       })
       .catch(e => {
         this.setState({
             message: e.message,
             ifError: true
           });
-        console.log(e);
       });
+    }
   }
 
 
   render() {
-    const { currentRole, ifError } = this.state;
-
+    const { currentRole,currentErrors, ifError,message } = this.state;
+    console.log(this.state.currentRole);
     return (
       <div>
           <div className="edit-form">
-            <form>
+            <form name="updateRole" onSubmit={this.updateRole}>
               <div className="form-group">
                 <label htmlFor="role">Nom du rôle</label>
-                <input type="text" className="form-control" id="role" value={currentRole.titre} onChange={this.onChangeRole}/>
+                <input type="text" name="role" className="form-control" id="role" value={currentRole.titre} onChange={this.onChangeRole}/>
+                <span className="text-danger">{currentErrors.title}</span>
               </div>
-            </form>
-            <CButton type="submit" block  color="info" onClick={this.updateRole}>
+              <CButton type="submit" block  color="info">
                 Modifier
-            </CButton>
+              </CButton>
+            </form>
           </div>
-          {ifError != null ? ifError ? <CAlert color="danger">{this.state.message}</CAlert> : <CAlert color="success">{this.state.message}</CAlert> : <CAlert></CAlert>}
+          {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
       </div>
     );
   }
 }
+
+export default withRouter(UpdateRole)
