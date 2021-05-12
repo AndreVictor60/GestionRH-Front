@@ -26,9 +26,9 @@ class AllTypeContrat extends Component {
                 <CCardBody>
                 <CRow className="align-items-right mt-3">
                   <CCol xl md={{ span: 2, offset: 10 }}>
-                      <CButton to={"/type-contrat/creation"} className="float-right" block variant="outline" color="info">
-                        <CIcon name="cil-user" />  Ajout d'un type de contrat
-                      </CButton>
+                      <CButton className="float-right" block variant="outline" color="info" to="/type-contrat/creation">
+                      <CIcon name="cil-home" />  Ajout d'un type de contrat
+                    </CButton>
                   </CCol>
                 </CRow>
                 <ListTypeContrat />

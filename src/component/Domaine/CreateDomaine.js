@@ -88,7 +88,7 @@ class CreateDomaine extends Component {
     }else {
       this.setState({
           message: "Une erreur est présente dans votre formulaire.",
-          ifError: false
+          ifError: true
       });
     }
     
@@ -110,7 +110,7 @@ class CreateDomaine extends Component {
                 Créer
               </CButton>
             </form>
-            {ifError != null ? ifError ? <CAlert color="danger">{message}</CAlert> : <CAlert color="success">{message}</CAlert> : <CAlert></CAlert>}
+            {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
           </div>
       </div>
     );

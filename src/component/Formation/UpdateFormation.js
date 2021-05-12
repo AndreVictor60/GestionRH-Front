@@ -8,43 +8,43 @@ import formationsService from "src/services/formations.service";
 import { compareDateStringWithDateCurrent, compareTwoDateString, ifNumberWithDecimal,ifNumber,isValidDate } from "src/utils/fonctions";
 import { withRouter } from "react-router-dom";
 
-export class CreateFormation extends Component {
+class UpdateFormation extends Component {
   constructor(props) {
     super(props);
     this.getAllDomaines = this.getAllDomaines.bind(this);
     this.getAllSkills = this.getAllSkills.bind(this);
     this.onChangeSkills = this.onChangeSkills.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.saveTraining = this.saveTraining.bind(this);
+    this.updateTraining = this.updateTraining.bind(this);
     this.validationForm = this.validationForm.bind(this);
+    this.getFormation = this.getFormation.bind(this);
     this.state = {
       message: null,
       ifError: null,
       currentErrors: {
         title: null,
-        titleBool: true,
+        titleBool: false,
         duration: null,
-        durationBool: true,
+        durationBool: false,
         price: null,
-        priceBool: true,
+        priceBool: false,
         startDate: null,
-        startDateBool: true,
+        startDateBool: false,
         endDate: null,
-        endDateBool: true,
+        endDateBool: false,
         domain: null,
-        domainBool: true,
+        domainBool: false,
         skill: null,
-        skillBool: true
+        skillBool: false
       },
       validateForm: false,
       domains: [],
       skills: [],
       currentFormation: {
-        titre: null,
-        dateDebut: null,
-        dateFin: null,
+        titre: '',
+        dateDebut: '',
+        dateFin: '',
         duree: 0,
-        test: null,
         prix: 0,
         domaine: {
           id: 0,
@@ -303,6 +303,7 @@ export class CreateFormation extends Component {
   }
 
   componentDidMount() {
+    this.getFormation(this.props.formationid.id)
     this.getAllDomaines();
     this.getAllSkills();
   }
@@ -385,12 +386,26 @@ export class CreateFormation extends Component {
       });
   }
 
-  saveTraining(e) {
+  getFormation(id){
+    formationsService.getFormationById(id)
+    .then(response => {
+      this.setState({
+          currentFormation: response.data
+      });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
+  updateTraining(e) {
    e.preventDefault();
+   console.log(this.state.currentErrors);
    if(this.validationForm()){
     const json = JSON.stringify(this.state.currentFormation).split('"value":').join('"id":');
     const data = JSON.parse(json);
-    formationsService.save(data)
+    formationsService.update(data)
       .then((resp) => {
         this.setState({
           message: "Création bien prise en compte ! Redirection vers la liste des formations.",
@@ -410,7 +425,6 @@ export class CreateFormation extends Component {
       message: "Une erreur s'est produite ! veuillez ré-essayer.",
       ifError: true
     });
-     console.log("Des erreurs présents");
    }
   }
 
@@ -419,10 +433,11 @@ export class CreateFormation extends Component {
   render() {
     const { domains, skills, currentFormation, currentErrors,message,ifError } = this.state;
     const dateNow = new Date();
+    console.log("render",this.state.currentErrors);
     return (
       <div className="submit-form">
         <div>
-          <form name="createTraining" onSubmit={this.saveTraining}>
+          <form name="createTraining" onSubmit={this.updateTraining}>
             <div className="row">
               <div className="col">
                 <div className="form-group">
@@ -432,6 +447,7 @@ export class CreateFormation extends Component {
                     name="title"
                     className="form-control"
                     id="title"
+                    value={currentFormation.titre}
                     onChange={this.handleChange}
                     required
                   />
@@ -448,6 +464,7 @@ export class CreateFormation extends Component {
                     name="duration"
                     className="form-control"
                     id="duration"
+                    value={currentFormation.duree}
                     onChange={this.handleChange}
                     required
                   />
@@ -462,6 +479,7 @@ export class CreateFormation extends Component {
                     name="price"
                     className="form-control"
                     id="price"
+                    value={currentFormation.prix}
                     onChange={this.handleChange}
                     required
                   />
@@ -481,6 +499,7 @@ export class CreateFormation extends Component {
                     name="startDate"
                     className="form-control"
                     id="startDate"
+                    value={currentFormation.dateDebut}
                     onChange={this.handleChange}
                     required
                   />
@@ -499,6 +518,7 @@ export class CreateFormation extends Component {
                     className="form-control"
                     id="endDate"
                     onChange={this.handleChange}
+                    value={currentFormation.dateFin}
                     required
                   />
                   <span className="text-danger">{currentErrors.endDate}</span>
@@ -514,6 +534,7 @@ export class CreateFormation extends Component {
                     name="domain"
                     id="domain"
                     onChange={this.handleChange}
+                    value={currentFormation.domaine.id === null ? 0 : currentFormation.domaine.id}
                     required
                   >
                     <option value="0">Veuillez sélectionner un domaine</option>
@@ -541,7 +562,9 @@ export class CreateFormation extends Component {
                         ? null
                         : currentFormation.competences
                     }
-                    options={skills.map((e) => ({ label: e.nom, value: e.id }))}
+                    getOptionLabel={option => option.nom}
+                    getOptionValue={option => option.id}
+                    options={skills.map((e) => ({ nom: e.nom, id: e.id }))}
                     onChange={this.onChangeSkills}
                     isMulti
                     isSearchable={true}
@@ -552,7 +575,7 @@ export class CreateFormation extends Component {
               </div>
             </div>
             <CButton type="submit" block color="info">
-              Ajout d'une formation
+              Modifier la formation
             </CButton>
           </form>
           {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
@@ -562,4 +585,4 @@ export class CreateFormation extends Component {
   }
 }
 
-export default withRouter(CreateFormation);
+export default withRouter(UpdateFormation);

@@ -1,8 +1,8 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import DomaineService from "../../services/domaine.service";
-
-export default class UpdateDomaine extends Component {
+class UpdateDomaine extends Component {
   constructor(props) {
     super(props);
     this.onChangeDomaine = this.onChangeDomaine.bind(this);
@@ -91,7 +91,7 @@ export default class UpdateDomaine extends Component {
     }else{
       this.setState({
         message: "Une erreur est présente dans votre formulaire.",
-        ifError: false
+        ifError: true
     });
     }
   }
@@ -111,9 +111,12 @@ export default class UpdateDomaine extends Component {
                 Modifier
               </CButton>
             </form>
-            {ifError != null ? ifError ? <CAlert color="danger">{message}</CAlert> : <CAlert color="success">{message}</CAlert> : <CAlert></CAlert>}
+            {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
           </div>
       </div>
     );
   }
 }
+
+
+export default withRouter(UpdateDomaine)

@@ -114,7 +114,7 @@ class CreateEntreprise extends Component {
     if(this.state.currentErrors.nameBool && this.state.currentErrors.addressBool){
       this.setState({
         message: "Une erreur est présente dans votre formulaire.",
-        ifError: false
+        ifError: true
       });
     }else{
       EntreprisesService.save(this.state.currentEntreprise)
@@ -122,7 +122,7 @@ class CreateEntreprise extends Component {
           this.setState({
             id: response.data.id,
             message: "Création bien prise en compte ! Redirection vers la liste de entreprise.",
-            ifError: true
+            ifError: false
           });
           window.setTimeout(() => {this.props.history.push("/entreprises/liste")}, 3000);
         })
@@ -162,7 +162,7 @@ class CreateEntreprise extends Component {
               Créer une entreprise
             </CButton>
             </form>
-            {ifError != null ? ifError ? <CAlert color="danger">{message}</CAlert> : <CAlert color="success">{message}</CAlert> : <CAlert></CAlert>}
+            {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
           </div>
       </div>
     );

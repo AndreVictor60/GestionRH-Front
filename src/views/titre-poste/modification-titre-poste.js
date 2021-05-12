@@ -10,7 +10,7 @@ import {
 //import { Link } from 'react-router-dom'
 import UpdateTitrePoste from '../../component/TitrePoste/UpdateTitrePoste';
 
-class AllTitrePoste extends Component {
+class updateTitrePoste extends Component {
 
   render() {
     return(
@@ -32,4 +32,4 @@ class AllTitrePoste extends Component {
   }
 }
 
-export default AllTitrePoste
+export default updateTitrePoste
