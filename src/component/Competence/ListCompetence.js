@@ -52,7 +52,7 @@ class ListCompetence extends Component {
     ifdelete(competence){
       swal({
         title: "Êtes-vous sûrs ?",
-        text: "Voulez-vous supprimer cette compétence : '"+competence.nom+"' ?",
+        text: "Voulez-vous supprimer cette compétence : '"+competence.nom+"' appartenant au(x) dommaine(s) : "+competence.domaines.map(domaine => domaine.titre + ", ")+"?",
         icon: "warning",
         buttons: true,
         dangerMode: true,
