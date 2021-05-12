@@ -33,7 +33,7 @@ class CreateRole extends Component {
         currentErrors: {
           ...prevState.currentErrors,
           title: "Le champ nom est requis.",
-          nameBool: true
+          titleBool: true
         }
       }));
     }else{

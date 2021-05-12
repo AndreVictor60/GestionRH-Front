@@ -1,4 +1,4 @@
-import { CButton } from "@coreui/react";
+import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
 import TypeContratService from "../../services/type-contrat.service";
 
@@ -7,89 +7,94 @@ export default class CreateTypeContrat extends Component {
     super(props);
     this.onChangeTypeContrat = this.onChangeTypeContrat.bind(this);
     this.createTypeContrat = this.createTypeContrat.bind(this);
-    this.getTypeContrat = this.getTypeContrat.bind(this);
 
     this.state = {
+      currentErrors: {
+        title: null,
+        titleBool: true
+      },
         currentTypeContrat: {
         id: null,
         typeContrat: ""
       },
-      message: ""
+      message: "",
+      ifError: null
     };
   }
 
-  componentDidMount() {
-   
-  }
   onChangeTypeContrat(e){
     const typeContrat = e.target.value;
-
-    this.setState(function(prevState) {
-      return {
+    if (typeContrat === "" || typeContrat === null || typeContrat.length === 0) {
+      this.setState((prevState) => ({
         currentTypeContrat: {
           ...prevState.currentTypeContrat,
-          type: typeContrat
+          typeContrat: typeContrat,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: "Le champ nom est requis.",
+          titleBool: true
         }
-      };
-    });
+      }));
+    }else{
+      this.setState((prevState) => ({
+        currentTypeContrat: {
+          ...prevState.currentTypeContrat,
+          typeContrat: typeContrat,
+        },
+        currentErrors: {
+          ...prevState.currentErrors,
+          title: null,
+          titleBool: false
+        }
+      }));
+    }
   }
-  
-  getTypeContrat(id) {
-    TypeContratService.getTypeContratById(id)
-      .then(response => {
-        this.setState({
-            currentTypeContrat: response.data
-        });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
+
+  createTypeContrat(e) {
+    e.preventDefault();
+    if(this.state.currentErrors.titleBool){
+      this.setState({
+        message: "Une erreur est présente dans votre formulaire.",
+        ifError: true
       });
-  }
-
-  redirectionApresValidation(){
-    setTimeout(function() {
-      window.location.replace('/type-contrat/liste');
-    }, 1000);
-  }
-
-  createTypeContrat() {
-    TypeContratService.save(
-      this.state.currentTypeContrat
-    )
+    }else{
+      TypeContratService.save(this.state.currentTypeContrat)
       .then(response => {
         console.log(response.data);
         this.setState({
             currentTypeContrat: response.data,
-            message: "Création bien prise en compte ! Redirection vers la liste de type de contrat."
+            message: "Création bien prise en compte ! Redirection vers la liste de type de contrat.",
+            ifError: false
         });
-        //redirection vers liste type de contrat
-        this.redirectionApresValidation();
+        window.setTimeout(() => {this.props.history.push('/type-contrat/liste')}, 3000);
       })
       .catch(e => {
         this.setState({
-            message: e.message
+            message: e.message,
+            ifError: true
           });
-        console.log(e);
       });
+    }
   }
 
   render() {
-    const { currentTypeContrat } = this.state;
+    const { currentTypeContrat,currentErrors,message,ifError } = this.state;
 
     return (
       <div>
           <div className="edit-form">
-            <form>
+            <form name="createTypeContrat" onSubmit={this.createTypeContrat}>
               <div className="form-group">
                 <label htmlFor="typeContrat">Créer un nouveau type de contrat</label>
                 <input type="text" className="form-control" id="typeContrat" value={currentTypeContrat.type} onChange={this.onChangeTypeContrat}/>
+                <span className="text-danger">{currentErrors.title}</span>
               </div>
-            </form>
-            <CButton type="submit" block  color="info" onClick={this.createTypeContrat}>
+              <CButton type="submit" block  color="info">
                 Créer
-            </CButton>
-            <p>{this.state.message}</p>
+              </CButton>
+            </form>
+            {ifError != null && <CAlert color={ifError ? "danger" : "success"}>{message}</CAlert>}
           </div>
       </div>
     );
