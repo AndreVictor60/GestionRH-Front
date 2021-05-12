@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from 'sweetalert';
@@ -81,7 +82,8 @@ class ListTypeContrat extends Component {
                   {typescontrat.map( typecontrat => 
                       <tr key={typecontrat.id}>
                           <td>{typecontrat.type}</td>
-                          <td><Link to={"/type-contrat/modification/" + typecontrat.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(typecontrat)}>Supprimer</Link></td>
+                          <td><Link to={"/type-contrat/modification/" + typecontrat.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link>
+                          <CButton  color="danger" onClick={() => this.ifdelete(typecontrat)} title="Vous voulez supprimer cette ligne ?"> Supprimer</CButton></td>
                       </tr>
                     )}
                     </tbody>

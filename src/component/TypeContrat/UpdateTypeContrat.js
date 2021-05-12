@@ -1,14 +1,14 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import TypeContratService from "../../services/type-contrat.service";
 
-export default class UpdateTypeContrat extends Component {
+class UpdateTypeContrat extends Component {
   constructor(props) {
     super(props);
     this.onChangeTypeContrat = this.onChangeTypeContrat.bind(this);
     this.updateTypeContrat = this.updateTypeContrat.bind(this);
     this.getTypeContrat = this.getTypeContrat.bind(this);
-
     this.state = {
       currentErrors: {
         title: null,
@@ -16,7 +16,7 @@ export default class UpdateTypeContrat extends Component {
       },
         currentTypeContrat: {
         id: null,
-        typeContrat: ""
+        type: ""
       },
       message: "",
       ifError: null
@@ -33,7 +33,7 @@ export default class UpdateTypeContrat extends Component {
       this.setState((prevState) => ({
         currentTypeContrat: {
           ...prevState.currentTypeContrat,
-          typeContrat: typeContrat,
+          type: typeContrat,
         },
         currentErrors: {
           ...prevState.currentErrors,
@@ -45,7 +45,7 @@ export default class UpdateTypeContrat extends Component {
       this.setState((prevState) => ({
         currentTypeContrat: {
           ...prevState.currentTypeContrat,
-          typeContrat: typeContrat,
+          type: typeContrat,
         },
         currentErrors: {
           ...prevState.currentErrors,
@@ -67,7 +67,6 @@ export default class UpdateTypeContrat extends Component {
         console.log(e);
       });
   }
-
 
   updateTypeContrat(e) {
     e.preventDefault();
@@ -96,10 +95,8 @@ export default class UpdateTypeContrat extends Component {
     }
   }
 
-
   render() {
     const { currentTypeContrat,currentErrors,message,ifError } = this.state;
-
     return (
       <div>
           <div className="edit-form">
@@ -119,3 +116,5 @@ export default class UpdateTypeContrat extends Component {
     );
   }
 }
+
+export default withRouter(UpdateTypeContrat)

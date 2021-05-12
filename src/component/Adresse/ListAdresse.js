@@ -34,7 +34,7 @@ class ListAdresse extends Component {
             <>
             <div className="row mt-4">
               <div className="col-lg-12">
-                <table className="table table-hover table-striped table-bordered">
+                <table className="table table-hover table-striped table-bordered ">
                   <thead>
                     <tr>
                         <th>Numéro</th>

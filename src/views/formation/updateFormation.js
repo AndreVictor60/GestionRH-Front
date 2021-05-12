@@ -8,11 +8,9 @@ import {
 } from '@coreui/react'
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
-import UpdateRole from '../../component/Role/UpdateRole';
-/**
- * View update role
- */
-class updateRole extends Component {
+import UpdateFormation from '../../component/Formation/UpdateFormation';
+
+class updateFormation extends Component {
 
   render() {
     return(
@@ -21,10 +19,10 @@ class updateRole extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                Modifier un rôle
+                Modification d'une formation
               </CCardHeader>
               <CCardBody>
-                <UpdateRole roleId={this.props.match.params} />
+                <UpdateFormation formationid={this.props.match.params} />
               </CCardBody>
             </CCard>
           </CCol>
@@ -34,4 +32,4 @@ class updateRole extends Component {
   }
 }
 
-export default updateRole
+export default updateFormation

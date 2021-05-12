@@ -10,7 +10,7 @@ import {
 //import { Link } from 'react-router-dom'
 import UpdateTypeContrat from '../../component/TypeContrat/UpdateTypeContrat';
 
-class AllTypeContrat extends Component {
+class updateTypeContrat extends Component {
 
   render() {
     return(
@@ -32,4 +32,4 @@ class AllTypeContrat extends Component {
   }
 }
 
-export default AllTypeContrat
+export default updateTypeContrat

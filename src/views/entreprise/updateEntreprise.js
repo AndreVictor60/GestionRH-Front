@@ -10,7 +10,7 @@ import {
 //import { Link } from 'react-router-dom'
 import Entreprise from '../../component/Entreprise/UpdateEntreprise';
 
-class AllAdresses extends Component {
+class updateEntreprise extends Component {
 
   render() {
     return(
@@ -19,7 +19,7 @@ class AllAdresses extends Component {
           <CCol>
             <CCard>
               <CCardHeader>
-                Modification d'une adresse
+                Modification d'une entreprise
               </CCardHeader>
               <CCardBody>
                 <Entreprise entrepriseid={this.props.match.params} />
@@ -32,4 +32,4 @@ class AllAdresses extends Component {
   }
 }
 
-export default AllAdresses
+export default updateEntreprise

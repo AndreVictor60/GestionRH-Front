@@ -1,8 +1,8 @@
 import { CAlert, CButton } from "@coreui/react";
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import DomaineService from "../../services/domaine.service";
-
-export default class UpdateDomaine extends Component {
+class UpdateDomaine extends Component {
   constructor(props) {
     super(props);
     this.onChangeDomaine = this.onChangeDomaine.bind(this);
@@ -117,3 +117,6 @@ export default class UpdateDomaine extends Component {
     );
   }
 }
+
+
+export default withRouter(UpdateDomaine)

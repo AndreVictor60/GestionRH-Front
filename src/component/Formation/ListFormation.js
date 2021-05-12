@@ -63,6 +63,7 @@ class ListFormation extends Component {
                         <th>Durée<span><small><i>(en heure)</i></small></span></th>
                         <th>Prix<span><small><i>(TTC)</i></small></span></th>
                         <th></th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -74,6 +75,7 @@ class ListFormation extends Component {
                             <td>{formation.duree}</td>
                             <td>{formation.prix} €</td>
                             <td><Link to={"/formations/voir/" + formation.id}>Voir</Link></td>
+                            <td><Link to={"/formations/modification/" + formation.id}>Modifier</Link></td>
                         </tr>
                       )}
                       </tbody>

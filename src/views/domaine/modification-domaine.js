@@ -10,7 +10,7 @@ import {
 //import { Link } from 'react-router-dom'
 import UpdateDomaine from '../../component/Domaine/UpdateDomaine';
 
-class AllDomaine extends Component {
+class updateDomaine extends Component {
 
   render() {
     return(
@@ -32,4 +32,4 @@ class AllDomaine extends Component {
   }
 }
 
-export default AllDomaine
+export default updateDomaine

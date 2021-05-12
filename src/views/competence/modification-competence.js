@@ -10,7 +10,7 @@ import {
 //import { Link } from 'react-router-dom'
 import UpdateCompetence from '../../component/Competence/UpdateCompetence';
 
-class AllCompetence extends Component {
+class updateCompetence extends Component {
 
   render() {
     return(
@@ -32,4 +32,4 @@ class AllCompetence extends Component {
   }
 }
 
-export default AllCompetence
+export default updateCompetence

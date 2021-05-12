@@ -14,22 +14,16 @@ const WidgetsBrand = ({withCharts})=>{
       <CWidgetBrand
         color="facebook"
         rightHeader="89k"
-        rightFooter="friends"
+        rightFooter="Salaries"
         leftHeader="459"
-        leftFooter="feeds"
+        leftFooter="Postes"
       >
         <CIcon
-          name="cib-facebook"
+          name="cil-user"
           height="52"
           className="my-4"
         />
-        <ChartLineSimple
-          className="position-absolute w-100 h-100"
-          backgroundColor="rgba(255,255,255,.1)"
-          dataPoints={[65, 59, 84, 84, 51, 55, 40]}
-          label="Friends"
-          labels="months"
-        />
+
       </CWidgetBrand>
     </CCol>
 
@@ -46,13 +40,7 @@ const WidgetsBrand = ({withCharts})=>{
           height="52"
           className="my-4"
         />
-        <ChartLineSimple
-          className="position-absolute w-100 h-100"
-          backgroundColor="rgba(255,255,255,.1)"
-          dataPoints={[1, 13, 9, 17, 34, 41, 38]}
-          label="Followers"
-          labels="months"
-        />
+
       </CWidgetBrand>
     </CCol>
 
@@ -69,13 +57,7 @@ const WidgetsBrand = ({withCharts})=>{
           height="52"
           className="my-4"
         />
-        <ChartLineSimple
-          className="position-absolute w-100 h-100"
-          backgroundColor="rgba(255,255,255,.1)"
-          dataPoints={[78, 81, 80, 45, 34, 12, 40]}
-          label="Contracts"
-          labels="months"
-        />
+
       </CWidgetBrand>
     </CCol> 
 
@@ -92,13 +74,6 @@ const WidgetsBrand = ({withCharts})=>{
           height="52"
           className="my-4"
         />
-        <ChartLineSimple
-          className="position-absolute w-100 h-100"
-          backgroundColor="rgba(255,255,255,.1)"
-          dataPoints={[35, 23, 56, 22, 97, 23, 64]}
-          label="Followers"
-          labels="months"
-        />
       </CWidgetBrand>
     </CCol>
   </CRow> :
@@ -108,9 +83,9 @@ const WidgetsBrand = ({withCharts})=>{
       <CWidgetBrand
         color="facebook"
         rightHeader="89k"
-        rightFooter="friends"
+        rightFooter="Salaries"
         leftHeader="459"
-        leftFooter="feeds"
+        leftFooter="Postes"
       >
         <CIcon
           name="cib-facebook"

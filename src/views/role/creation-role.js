@@ -9,8 +9,10 @@ import {
 /*import CIcon from '@coreui/icons-react'*/
 //import { Link } from 'react-router-dom'
 import CreateRole from '../../component/Role/CreateRole';
-
-class AllRole extends Component {
+/**
+ * view Create Role
+ */
+class createRole extends Component {
 
   render() {
     return(
@@ -32,4 +34,4 @@ class AllRole extends Component {
   }
 }
 
-export default AllRole
+export default createRole
