@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from 'sweetalert';
@@ -9,10 +10,12 @@ class ListDomaine extends Component {
         super(props);
         this.retrieveDomaine = this.retrieveDomaine.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.ifdelete = this.ifdelete.bind(this);
+        this.getNbTotalDomaine = this.getNbTotalDomaine.bind(this);
         this.state = {
           domaines: [],
           currentPage: 0,
-          sizePage: 2,
+          sizePage: 20,
           nbTotalDomaine: null,
           nbTotalPage: null,
           nbPage: null
@@ -39,7 +42,7 @@ class ListDomaine extends Component {
     }
 
     retrieveDomaine(pageNum) {
-        DomaineService.getAllDomaineByPage(pageNum,2)
+        DomaineService.getAllDomaineByPage(pageNum,this.state.sizePage)
         .then(response => {
           this.setState({
             domaines: response.data
@@ -61,31 +64,28 @@ class ListDomaine extends Component {
       })
       .then((willDelete) => {
         if (willDelete) {
-          this.deleteDomaine(domaine.id)
+          DomaineService.delete(domaine.id).then(resp => {
+            swal("Suppression bien prise en compte !", {
+              icon: "success",
+            });
+            this.setState({
+              retrieveDomaine: resp.data,//suppression OK
+              domaines: this.state.domaines.filter(d => d.id !== domaine.id)
+            });
+          }).catch((e) => {
+            swal(e+"\nCe domaine est utilisé.", {
+              icon: "error",
+            });
+            this.setState({
+              message: e.message
+            });
+            console.log("erreur supression : ",e)
+          });
           swal("Suppression bien prise en compte !", {
             icon: "success",
           });
         }
       });
-      /*window.confirm("Voulez-vous supprimer se domaine : '"+domaine.titre+"' ?") &&
-        this.deleteDomaine(domaine.id)*/
-    }
-
-    deleteDomaine(id) {
-      DomaineService.delete(id)
-        .then(response => {
-          console.log(response.data);
-          this.setState({
-            retrieveDomaine: response.data,//suppression OK
-            domaines: this.state.domaines.filter(d => d.id !== id)
-          });
-        })
-        .catch(e => {
-          this.setState({
-              message: e.message
-            });
-          console.log(e);
-        });
     }
 
     render() {
@@ -108,7 +108,8 @@ class ListDomaine extends Component {
                   {domaines.map( domaine => 
                       <tr key={domaine.id}>
                           <td>{domaine.titre}</td>
-                          <td><Link to={"/domaine/modification/" + domaine.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(domaine)}>Supprimer</Link></td>
+                          <td><Link to={"/domaine/modification/" + domaine.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link>
+                          <CButton color="danger" onClick={() => this.ifdelete(domaine)}>Supprimer</CButton></td>
                       </tr>
                     )}
                     </tbody>

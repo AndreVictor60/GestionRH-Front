@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import AdressesService from "../../services/adresses.service";
@@ -55,7 +56,7 @@ class ListAdresse extends Component {
                             <td>{adresse.ville}</td>
                             <td>{adresse.codePostal}</td>
                             <td>{adresse.pays}</td>
-                            <td><Link to={"/adresses/modification/" + adresse.id}>Modifier</Link></td>
+                            <td><Link to={"/adresses/modification/" + adresse.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link></td>
                         </tr>
                       )}
                       </tbody>

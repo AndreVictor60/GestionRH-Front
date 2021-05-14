@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from 'sweetalert';
@@ -7,6 +8,7 @@ class ListRole extends Component {
     constructor(props) {
         super(props);
         this.retrieveRole = this.retrieveRole.bind(this);
+        this.ifdelete = this.ifdelete.bind(this);
         this.state = {
           roles: []
         };
@@ -39,29 +41,28 @@ class ListRole extends Component {
       })
       .then((willDelete) => {
         if (willDelete) {
-          this.deleteRole(role.id)
+          RoleService.deleteById(role.id).then(resp => {
+            swal("Suppression bien prise en compte !", {
+              icon: "success",
+            });
+            this.setState({
+              retrieveRole: resp.data,//suppression OK
+              roles: this.state.roles.filter(r => r.id !== role.id)
+            });
+          }).catch((e) => {
+            swal(e+"\nCe rôle est utilisé.", {
+              icon: "error",
+            });
+            this.setState({
+              message: e.message
+            });
+            console.log("erreur supression : ",e)
+          });
           swal("Suppression bien prise en compte !", {
             icon: "success",
           });
         }
       });
-    }
-
-    deleteRole(id) {
-      RoleService.deleteById(id)
-        .then(response => {
-          console.log(response.data);
-          this.setState({
-            retrieveRole: response.data,//suppression OK
-            roles: this.state.roles.filter(r => r.id !== id)
-          });
-        })
-        .catch(e => {
-          this.setState({
-              message: e.message
-            });
-          console.log(e);
-        });
     }
 
     render() {
@@ -81,7 +82,8 @@ class ListRole extends Component {
                   {roles.map( role => 
                       <tr key={role.id}>
                           <td>{role.titre}</td>
-                          <td><Link to={"/role/modification/" + role.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(role)}>Supprimer</Link></td>
+                          <td><Link to={"/role/modification/" + role.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link>
+                          <CButton color="danger" onClick={() => this.ifdelete(role)}>Supprimer</CButton></td>
                       </tr>
                     )}
                     </tbody>

@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from 'sweetalert';
@@ -8,7 +9,9 @@ class ListCompetence extends Component {
     constructor(props) {
         super(props);
         this.retrieveCompetence = this.retrieveCompetence.bind(this);
+        this.getNbTotalCompetence = this.getNbTotalCompetence.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.ifdelete = this.ifdelete.bind(this);
         this.state = {
           competences: [],
           currentPage: 0,
@@ -59,29 +62,25 @@ class ListCompetence extends Component {
       })
       .then((willDelete) => {
         if (willDelete) {
-          this.deleteCompetence(competence.id)
-          swal("Suppression bien prise en compte !", {
-            icon: "success",
+          CompetenceService.deleteById(competence.id).then(resp => {
+            swal("Suppression bien prise en compte !", {
+              icon: "success",
+            });
+            this.setState({
+              retrieveCompetence: resp.data,//suppression OK
+              competences: this.state.competences.filter(c => c.id !== competence.id)
+            });
+          }).catch((e) => {
+            swal(e+"\nCette compétence est utilisée.", {
+              icon: "error",
+            });
+            this.setState({
+              message: e.message
+            });
+            console.log("erreur supression : ",e)
           });
         }
       });
-    }
-
-    deleteCompetence(id) {
-        CompetenceService.deleteById(id)
-        .then(response => {
-          console.log(response.data);
-          this.setState({
-            retrieveCompetence: response.data,//suppression OK
-            competences: this.state.competences.filter(c => c.id !== id)
-          });
-        })
-        .catch(e => {
-          this.setState({
-              message: e.message
-            });
-          console.log(e);
-        });
     }
 
     render() {
@@ -104,7 +103,8 @@ class ListCompetence extends Component {
                       <tr key={competence.id}>
                           <td>{competence.nom}</td>
                           <td>{competence.domaines.map(domaine => domaine.titre + ", ")}</td>
-                          <td><Link to={"/competence/modification/" + competence.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(competence)}>Supprimer</Link></td>
+                          <td><Link to={"/competence/modification/" + competence.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link>
+                          <CButton  color="danger" onClick={() => this.ifdelete(competence)} title="Vous voulez supprimer cette ligne ?">Supprimer</CButton></td>
                       </tr>
                     )}
                     </tbody>
