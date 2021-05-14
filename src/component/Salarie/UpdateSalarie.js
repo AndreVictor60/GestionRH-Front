@@ -20,20 +20,23 @@ import SalariesService from "../../services/salaries.service";
                 nom: "",
                 prenom: "",
                 email: "",
-                dateNaissance: "",
                 motDePasse: "",
+                dateNaissance: "",
                 telPersonnel: "",
                 mobilPersonnel: "",
                 telProfessionnel: "",
                 mobileProfessionnel: "",
                 adresse: {
-                  id: 0
+                  id: 0,
+                  version: null
                 },
                 domaine: {
-                  id: 0
+                  id: 0,
+                  version: null
                 },
                 entreprise: {
-                  id: 0
+                  id: 0,
+                  version: null
                 },
                 roles: [],
                 competences: [],
@@ -270,12 +273,13 @@ import SalariesService from "../../services/salaries.service";
         e.preventDefault();
         const json = JSON.stringify(this.state.currentSalarie).split('"value":').join('"id":');
         const data = JSON.parse(json);
+        delete data.postes;
         SalariesService.updateWithoutPassword(data)
         .then(resp => {
             console.log(resp);
             // retourne sur le profil de utilisateur modifie
         }) 
-        .catch(e => { console.log(e)})
+        .catch(e => { console.log(e.message)})
     }
 
     render() {
@@ -426,7 +430,7 @@ import SalariesService from "../../services/salaries.service";
                 </div>
               </div>
               <CButton type="submit" block  color="info">
-                Ajout d'un salarié
+                Modification du salarié
             </CButton>
             </form>
             </div>
