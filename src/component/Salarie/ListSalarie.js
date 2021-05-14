@@ -5,12 +5,7 @@ import { compareDateStringWithDateCurrent } from '../../utils/fonctions';
 class ListSalarie extends Component {
     constructor(props) {
       super(props);
-      //this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
       this.retrieveSalaries = this.retrieveSalaries.bind(this);
-      //this.refreshList = this.refreshList.bind(this);
-      //this.setActiveSalarie = this.setActiveSalarie.bind(this);
-      //this.searchTitle = this.searchTitle.bind(this);
-
       this.state = {
         salaries: []
       };
@@ -19,14 +14,6 @@ class ListSalarie extends Component {
     componentDidMount() {
       this.retrieveSalaries();
     }
-  
-   /* onChangeSearchTitle(e) {
-      const searchTitle = e.target.value;
-  
-      this.setState({
-        searchTitle: searchTitle
-      });
-    }*/
   
     retrieveSalaries() {
         SalariesService.getAll()
@@ -40,27 +27,6 @@ class ListSalarie extends Component {
           console.log(e);
         });
     }
-  
-   /* refreshList() {
-      this.retrieveSalaries();
-      this.setState({
-        currentSalarie: null,
-        currentIndex: -1
-      });
-    }*/
-
-    /*searchTitle() {
-        SalariesService.findByTitle(this.state.searchTitle)
-        .then(response => {
-          this.setState({
-            tutorials: response.data
-          });
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    }*/
 
     render() {
         const { salaries } = this.state;
@@ -83,11 +49,10 @@ class ListSalarie extends Component {
                     {salaries.map( salarie => 
                       <tr key={salarie.id}>
                         <td>{salarie.nom + " " + salarie.prenom}</td>
-                        
-                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].typeContrat.type) : ""}</td>
-                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].titrePoste.intitule) : ""}</td>
-                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].manager.nom + " " + salarie.postes[0].manager.prenom) : ' '}</td>
-                        <td>{salarie.postes.length !== 0  ? (salarie.postes[salarie.postes.length - 1].lieuTravail.nom) : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? compareDateStringWithDateCurrent(salarie.postes[0].dateFin) ? (salarie.postes[0].typeContrat.type) : "" : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? compareDateStringWithDateCurrent(salarie.postes[0].dateFin) ? (salarie.postes[0].titrePoste.intitule) : "" : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? compareDateStringWithDateCurrent(salarie.postes[0].dateFin) ? (salarie.postes[0].manager.nom + " " + salarie.postes[0].manager.prenom) : "" : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? compareDateStringWithDateCurrent(salarie.postes[0].dateFin) ? (salarie.postes[salarie.postes.length - 1].lieuTravail.nom) : "" : ""}</td>
                         <td><Link to={"/salaries/modification/" + salarie.id}>Modifier</Link></td>
                         </tr>
                       )}
