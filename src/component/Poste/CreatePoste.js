@@ -8,11 +8,13 @@ import CompetenceService from "../../services/competence.service";
 import TypeContratService from "../../services/type-contrat.service";
 import EntrepriseService from "../../services/entreprises.service";
 import Select from 'react-select';
-import { compareDateStringWithDateCurrent, ifNumberWithDecimal, compareTwoDateString } from "src/utils/fonctions";
-import moment from 'moment';
+import swal from 'sweetalert';
+import { compareDateStringWithDateCurrent, ifNumberWithDecimal } from "src/utils/fonctions";
 class CreatePoste extends Component {
   constructor(props){
       super(props);
+      //this.getAllDomaine = this.getAllDomaine.bind(this);
+      //this.onChangeDomaine = this.onChangeDomaine.bind(this);
       this.getAllSalarie = this.getAllSalarie.bind(this);
       this.getSalarieSansPoste = this.getSalarieSansPoste.bind(this);
       this.onChangeSalarie = this.onChangeSalarie.bind(this);
@@ -31,12 +33,14 @@ class CreatePoste extends Component {
       this.onChangeFichierContrat = this.onChangeFichierContrat.bind(this);
       this.onChangeMaitreApprentissage = this.onChangeMaitreApprentissage.bind(this);
       this.ifSAlariePoste = this.ifSAlariePoste.bind(this);
+      this.cloturerAncienPoste = this.cloturerAncienPoste.bind(this);
       this.savePoste = this.savePoste.bind(this);
 
       this.state = {
-          errors: {dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null, dateInfAujDHui: null},
+          errors: {dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null, dateInfAujDHui: null, salarieAcPoste: null},
           salaries: [],
-          salariesAvecPoste: [],
+          domaines: [],
+          salariesSansPoste: [],
           titresPoste: [],
           typesContrat: [],
           entreprises: [],
@@ -74,14 +78,41 @@ class CreatePoste extends Component {
   }
 
   componentDidMount() {
-      this.getSalarieSansPoste();
-      this.getAllTitrePoste();
-      this.getAllTypeContrat();
-      this.getAllEntreprise();
-      this.getAllManager();
-      this.getAllCompetence();
-      this.getAllMaitreApprentissage();
+    //this.getAllDomaine();
+    this.getAllSalarie();
+    this.getAllTitrePoste();
+    this.getAllTypeContrat();
+    this.getAllEntreprise();
+    this.getAllManager();
+    this.getAllCompetence();
+    this.getAllMaitreApprentissage();
   }
+
+  /*onChangeDomaine(e) {
+    const idDomaine = e.target.value;
+    if (0 !== idDomaine) {
+      this.setState((prevState) => ({
+        currentPoste: {
+          ...prevState.currentPoste,
+          salarie: {
+            id: idSalarie
+          }
+        }
+      }));
+    }
+  }
+  getAllDomaine() {
+    SalariesService.getAll()
+    .then(response => {
+      console.log("then getall");
+      this.setState({
+        salaries: response.data
+      });
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }*/
 
   onChangeSalarie(e) {
     const idSalarie = e.target.value;
@@ -96,6 +127,7 @@ class CreatePoste extends Component {
         }
       }));
     }
+    console.log("salarie : ", this.state.salaries);
   }
   getAllSalarie() {
     SalariesService.getAll()
@@ -110,26 +142,21 @@ class CreatePoste extends Component {
   }
   
   getSalarieSansPoste(){
-    this.getAllSalarie()
-    const currentdate = moment(new Date()).format('YYYY-MM-DD');
-    console.log("date :",currentdate);
-    console.log("salarie : ",this.state.salaries);
     this.setState({
-      salaries: this.state.salaries.filter(salarie => salarie.postes.length === 0 || salarie.postes.filter(poste => poste.dateFin < currentdate))
+      salaries: this.state.salaries.filter(salarie => salarie.postes.length === 0 || !compareDateStringWithDateCurrent(salarie.postes[0].dateFin))
     });
-    //console.log("1 salarie sans poste : ",this.state.salaries.filter(salarie => compareTwoDateString(salarie.poste.dateFin, currentdate) === "-").filter(salarie => salarie.postes.length === 0));
-    //console.log("2 salarie sans poste : ",this.state.salaries.map(salarie => salarie.postes.filter(poste => compareTwoDateString(poste.dateFin, currentdate) === "-" )));
-    
+    //console.log("2 salariesSansPoste : ",this.state.salaries.filter(salarie => salarie.postes.length === 0 || !compareDateStringWithDateCurrent(salarie.postes[0].dateFin)));
+    //console.log("salariesansposte : ",this.state.salaries);
   }
 
   onchangeSalarieSansPoste(e){
     if(e.target.checked){
-      //tout les salaries
-      this.getAllSalarie()
-    }
-    else{
       //salarie sans poste
       this.getSalarieSansPoste();
+    }
+    else{
+      //tout les salaries
+      this.getAllSalarie()
     }
   }
 
@@ -211,6 +238,7 @@ class CreatePoste extends Component {
         errors: {
           ...prevState.errors,
           dateFinInf: null,
+          dateInfAujDHui: null,
         }
         }));
         if(this.state.currentPoste.dateFin !== null && this.state.currentPoste.dateFin<dateDebut)
@@ -248,6 +276,13 @@ class CreatePoste extends Component {
           dateFinInf: null,
         }
         }));
+      }else{
+        this.setState((prevState) => ({
+          errors: {
+              ...prevState.errors,
+              dateInfAujDHui: "La date ne peut pas être inferieur à aujourd'hui.",
+          }
+        }));
       }
       if(this.state.currentPoste.dateDebut !== null && this.state.currentPoste.dateDebut>dateFin)
       {
@@ -258,14 +293,6 @@ class CreatePoste extends Component {
           }
         }));
       }
-    }
-    else{
-      this.setState((prevState) => ({
-        errors: {
-            ...prevState.errors,
-            dateInfAujDHui: "La date ne peut pas être inferieur à aujourd'hui.",
-        }
-      }));
     }
   }
 
@@ -442,27 +469,81 @@ class CreatePoste extends Component {
   }
 
   ifSAlariePoste(idsalarie){
-    /*console.log("salarie test : ",this.state.salariesAvecPoste.find(o => o.id === parseInt(idsalarie)));
-    console.log("salarie avec poste : ",this.state.salariesAvecPoste);
-    console.log("salarie selectionne : ",idsalarie);*/
-    
-    //this.state.salaries.find(o => o.id === idSalarie);
+    if(this.state.salaries.find(salarie => salarie.id === parseInt(idsalarie) && !compareDateStringWithDateCurrent(salarie.postes[0].dateFin))){
+      this.setState((prevState) => ({
+        errors: {
+            ...prevState.errors,
+            salarieAcPoste: null,
+        }
+      }));
+      return false; //n'a pas de poste
+    }
+    else{
+      this.setState((prevState) => ({
+        errors: {
+            ...prevState.errors,
+            salarieAcPoste: "Le salarié à un poste en cours",
+        }
+      }));
+      return true; //a un poste
+    }
   }
 
-  savePoste() {
+  cloturerAncienPoste(postes){
+    console.log("poste cap : ",postes);
+    console.log("salarie cap : ",this.state.salaries.find(salarie => salarie.id === parseInt(postes.salarie.id)));
+    const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(postes.salarie.id));
+    swal({
+      title: "Êtes-vous sûre ?",
+      text: salarie.nom+" "+salarie.prenom+" à déjà un poste. \nVoulez-vous cloturer se poste '"+salarie.postes[0].titrePoste.intitule+"' pour créer celui-ci ?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        PosteService.cloturerPoste(salarie.postes[0].id);
+        swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' à bien été cloturé.", {
+          icon: "success",
+        });
+        return true;
+      } else {
+        swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' n'à pas été cloturé.");
+        return false;
+      }
+    });
+  }
+
+  savePoste(e) {
+    e.preventDefault();
+    this.cloturerAncienPoste(this.state.currentPoste)
     //date fin obligatoire sauf CDI
     //ajouter champ "maitre d'apprentissage" dans poste de type salarieDto
-    this.ifSAlariePoste(this.state.currentPoste.salarie.id);
-    const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
-    const data = JSON.parse(json);
-    const formData = new FormData();
-    formData.append('contrat', this.state.fichierContratBrut);
-    PosteService.savePoste(data).then((resp) => {
-      console.log("response : ",resp);
-      //titre : contrat_nom_prenom_idPoste.pdf
-      this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
-    }).catch((e) => { console.log(e)})
-    //this.uploadFile(this.state.fichierContratBrut, 1, 100);
+    /*if(this.ifSAlariePoste(this.state.currentPoste)){
+      if(this.cloturerAncienPoste(this.state.currentPoste)){
+        const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
+        const data = JSON.parse(json);
+        const formData = new FormData();
+        formData.append('contrat', this.state.fichierContratBrut);
+        PosteService.savePoste(data).then((resp) => {
+          console.log("response : ",resp);
+          //titre : contrat_nom_prenom_idPoste.pdf
+          this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
+        }).catch((e) => { console.log(e)})
+        //this.uploadFile(this.state.fichierContratBrut, 1, 100);
+      }
+    }else{
+      const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
+      const data = JSON.parse(json);
+      const formData = new FormData();
+      formData.append('contrat', this.state.fichierContratBrut);
+      PosteService.savePoste(data).then((resp) => {
+        console.log("response : ",resp);
+        //titre : contrat_nom_prenom_idPoste.pdf
+        this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
+      }).catch((e) => { console.log(e)})
+      //this.uploadFile(this.state.fichierContratBrut, 1, 100);
+    }*/
   }
 
   render() {
@@ -471,7 +552,7 @@ class CreatePoste extends Component {
       return (
           <div className="submit-form">
           <div>
-          <form>
+          <form name="createPoste" onSubmit={this.savePoste}>
           <div className="row">
               <div className="col">
                 <div className="form-group">
@@ -487,10 +568,11 @@ class CreatePoste extends Component {
                 </div>
                 <div className="form-group form-check">
                   <input type="checkbox" value="1" className="form-check-input" id="salariesansposte" onChange={this.onchangeSalarieSansPoste}/>
-                  <label className="form-check-label" htmlFor="salariesansposte">Tous les salariés</label>
+                  <label className="form-check-label" htmlFor="salariesansposte">Afficher les salariés sans poste</label>
                 </div>
               </div>
             </div>
+            {this.state.errors.salarieAcPoste != null ? <CAlert color="warning">{this.state.errors.salarieAcPoste}</CAlert> : ""}
             <div className="row">
               <div className="col">
                 <div className="form-group">
@@ -622,14 +704,14 @@ class CreatePoste extends Component {
               </div>
             </div>
             <div className="form-group">
-                <label htmlFor="contrat">Contrat (PDF)</label>
+                <label htmlFor="contrat">Contrat (PDF) *</label>
                   <input type="file" id="contrat" name="contrat" className="form-control-file" onChange={this.onChangeFichierContrat} accept="application/pdf"/>
                 </div>
             {this.state.errors.extensionFichier != null ? <CAlert color="danger">{this.state.errors.extensionFichier}</CAlert> : ""}
-          </form>
-          <CButton type="submit" block  color="info" onClick={this.savePoste}>
+            <CButton type="submit" block  color="info">
               Ajout d'un salarié
-          </CButton>
+            </CButton>
+          </form>
           </div>
       </div>
       )

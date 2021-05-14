@@ -56,6 +56,10 @@ class PosteService {
     uploadFile(data) {
         return axios.post(API_URL + `/save-file`, data, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*", "Content-Type": "multipart/form-data" } });
     }
+
+    cloturerPoste(id) {
+        return axios.put(API_URL + `/cloturer-poste/${id}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+    }
 }
 
 export default new PosteService();
