@@ -75,7 +75,7 @@ class ListSalarie extends Component {
                       <th>Type de contrat</th>
                         <th>Poste</th>
                         <th>Manager</th>
-                        <th>Entreprise</th>
+                        <th>Entreprise du poste</th>
                         <th>Modifier</th>
                       </tr>
                     </thead>
@@ -83,25 +83,12 @@ class ListSalarie extends Component {
                     {salaries.map( salarie => 
                       <tr key={salarie.id}>
                         <td>{salarie.nom + " " + salarie.prenom}</td>
-                          {salarie.postes.length !== 0 ? salarie.postes.map((poste,key) => 
-                              <>
-                                {(poste.dateFin === null || compareDateStringWithDateCurrent(poste.dateFin)) && (
-                                  <>
-                                  <td key={key}>{poste.typeContrat.type}</td>
-                                  <td key={key + 100}>{poste.titrePoste.intitule}</td>
-                                  <td key={key + 1000}>{poste.manager !== null ? (poste.manager.nom + " " + poste.manager.prenom) : ' '}</td>
-                                  </>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                            </>
-                          )}
-                            <td>{salarie.entreprise.nom}</td>
-                            <td><Link to={"/salaries/modification/" + salarie.id}>Modifier</Link></td>
+                        
+                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].typeContrat.type) : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].titrePoste.intitule) : ""}</td>
+                        <td>{salarie.postes.length !== 0 ? (salarie.postes[0].manager.nom + " " + salarie.postes[0].manager.prenom) : ' '}</td>
+                        <td>{salarie.postes.length !== 0  ? (salarie.postes[salarie.postes.length - 1].lieuTravail.nom) : ""}</td>
+                        <td><Link to={"/salaries/modification/" + salarie.id}>Modifier</Link></td>
                         </tr>
                       )}
                       </tbody>
