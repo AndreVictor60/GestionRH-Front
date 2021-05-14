@@ -1,3 +1,4 @@
+import { CButton } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from 'sweetalert';
@@ -7,6 +8,7 @@ class ListTitrePoste extends Component {
     constructor(props) {
         super(props);
         this.retrieveTitrePoste = this.retrieveTitrePoste.bind(this);
+        this.ifdelete = this.ifdelete.bind(this);
         this.state = {
           titresPostes: []
         };
@@ -39,29 +41,25 @@ class ListTitrePoste extends Component {
       })
       .then((willDelete) => {
         if (willDelete) {
-          this.deleteTitrePoste(titrePoste.id)
-          swal("Suppression bien prise en compte !", {
-            icon: "success",
+          TitrePosteService.deleteTitrePosteById(titrePoste.id).then(resp => {
+            swal("Suppression bien prise en compte !", {
+              icon: "success",
+            });
+            this.setState({
+              retrieveRole: resp.data,//suppression OK
+              titresPostes: this.state.titresPostes.filter(tp => tp.id !== titrePoste.id)
+            });
+          }).catch((e) => {
+            swal(e+"\nCet intitulé de poste est utilisé.", {
+              icon: "error",
+            });
+            this.setState({
+              message: e.message
+            });
+            console.log("erreur supression : ",e)
           });
         }
       });
-    }
-
-    deleteTitrePoste(id) {
-      TitrePosteService.deleteTitrePosteById(id)
-        .then(response => {
-          console.log(response.data);
-          this.setState({
-            retrieveRole: response.data,//suppression OK
-            titresPostes: this.state.titresPostes.filter(tp => tp.id !== id)
-          });
-        })
-        .catch(e => {
-          this.setState({
-              message: e.message
-            });
-          console.log(e);
-        });
     }
 
     render() {
@@ -81,7 +79,8 @@ class ListTitrePoste extends Component {
                   {titresPostes.map( titrePoste => 
                       <tr key={titrePoste.id}>
                           <td>{titrePoste.intitule}</td>
-                          <td><Link to={"/titre-poste/modification/" + titrePoste.id}>Modifier</Link> / <Link onClick={() => this.ifdelete(titrePoste)}>Supprimer</Link></td>
+                          <td><Link to={"/titre-poste/modification/" + titrePoste.id}><CButton  className="mr-2" color="info" title="Vous voulez modifier cette ligne ?">Modifier</CButton></Link>
+                          <CButton color="danger"  onClick={() => this.ifdelete(titrePoste)}>Supprimer</CButton></td>
                       </tr>
                     )}
                     </tbody>

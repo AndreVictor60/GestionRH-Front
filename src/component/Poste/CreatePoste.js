@@ -33,7 +33,6 @@ class CreatePoste extends Component {
       this.onChangeFichierContrat = this.onChangeFichierContrat.bind(this);
       this.onChangeMaitreApprentissage = this.onChangeMaitreApprentissage.bind(this);
       this.ifSAlariePoste = this.ifSAlariePoste.bind(this);
-      this.cloturerAncienPoste = this.cloturerAncienPoste.bind(this);
       this.savePoste = this.savePoste.bind(this);
 
       this.state = {
@@ -72,7 +71,10 @@ class CreatePoste extends Component {
             lieuTravail: {
               id: null
             },
-            competences: [],
+            competencesRequises: [],
+            maitreAppretissage: {
+              id: null
+            },
           }
       };
   }
@@ -214,7 +216,7 @@ class CreatePoste extends Component {
     this.setState((prevState) => ({
       currentPoste: {
         ...prevState.currentPoste,
-        competences: e
+        competencesRequises: e
       }
     }))
     
@@ -274,6 +276,7 @@ class CreatePoste extends Component {
         errors: {
           ...prevState.errors,
           dateFinInf: null,
+          dateInfAujDHui: null,
         }
         }));
       }else{
@@ -469,7 +472,8 @@ class CreatePoste extends Component {
   }
 
   ifSAlariePoste(idsalarie){
-    if(this.state.salaries.find(salarie => salarie.id === parseInt(idsalarie) && !compareDateStringWithDateCurrent(salarie.postes[0].dateFin))){
+    const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(idsalarie));
+    if(salarie.postes.length === 0){
       this.setState((prevState) => ({
         errors: {
             ...prevState.errors,
@@ -479,59 +483,65 @@ class CreatePoste extends Component {
       return false; //n'a pas de poste
     }
     else{
-      this.setState((prevState) => ({
-        errors: {
-            ...prevState.errors,
-            salarieAcPoste: "Le salarié à un poste en cours",
-        }
-      }));
-      return true; //a un poste
-    }
-  }
-
-  cloturerAncienPoste(postes){
-    console.log("poste cap : ",postes);
-    console.log("salarie cap : ",this.state.salaries.find(salarie => salarie.id === parseInt(postes.salarie.id)));
-    const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(postes.salarie.id));
-    swal({
-      title: "Êtes-vous sûre ?",
-      text: salarie.nom+" "+salarie.prenom+" à déjà un poste. \nVoulez-vous cloturer se poste '"+salarie.postes[0].titrePoste.intitule+"' pour créer celui-ci ?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    })
-    .then((willDelete) => {
-      if (willDelete) {
-        PosteService.cloturerPoste(salarie.postes[0].id);
-        swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' à bien été cloturé.", {
-          icon: "success",
-        });
-        return true;
-      } else {
-        swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' n'à pas été cloturé.");
-        return false;
+      if(compareDateStringWithDateCurrent(salarie.postes[0].dateFin) || salarie.postes[0].dateFin === null){
+        this.setState((prevState) => ({
+          errors: {
+              ...prevState.errors,
+              salarieAcPoste: "Le salarié à un poste en cours",
+          }
+        }));
+        return true; //a un poste
+      }else{
+        this.setState((prevState) => ({
+          errors: {
+              ...prevState.errors,
+              salarieAcPoste: null,
+          }
+        }));
       }
-    });
+    }
   }
 
   savePoste(e) {
     e.preventDefault();
-    this.cloturerAncienPoste(this.state.currentPoste)
+    //this.cloturerAncienPoste(this.state.currentPoste)
     //date fin obligatoire sauf CDI
     //ajouter champ "maitre d'apprentissage" dans poste de type salarieDto
-    /*if(this.ifSAlariePoste(this.state.currentPoste)){
-      if(this.cloturerAncienPoste(this.state.currentPoste)){
-        const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
-        const data = JSON.parse(json);
-        const formData = new FormData();
-        formData.append('contrat', this.state.fichierContratBrut);
-        PosteService.savePoste(data).then((resp) => {
-          console.log("response : ",resp);
-          //titre : contrat_nom_prenom_idPoste.pdf
-          this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
-        }).catch((e) => { console.log(e)})
-        //this.uploadFile(this.state.fichierContratBrut, 1, 100);
-      }
+    if(this.ifSAlariePoste(this.state.currentPoste)){
+      const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(this.state.currentPoste.salarie.id));
+      swal({
+        title: "Êtes-vous sûre ?",
+        text: salarie.nom+" "+salarie.prenom+" à déjà un poste. \nVoulez-vous cloturer se poste '"+salarie.postes[0].titrePoste.intitule+"' pour créer celui-ci ?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          PosteService.cloturerPoste(salarie.postes[0]).then(resp => {
+            swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' à bien été cloturé.", {
+              icon: "success",
+            });
+            const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
+            const data = JSON.parse(json);
+            const formData = new FormData();
+            formData.append('contrat', this.state.fichierContratBrut);
+            PosteService.savePoste(data).then((resp) => {
+              console.log("response : ",resp);
+              //titre : contrat_nom_prenom_idPoste.pdf
+              this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
+            }).catch((e) => { console.log(e)})
+          }).catch((e) => {
+            swal(" "+e, {
+              icon: "error",
+            });
+            console.log("erreur cloture de poste : ",e)
+          })
+        } else {
+          swal("Le poste '"+salarie.postes[0].titrePoste.intitule+"' n'à pas été cloturé.");
+
+        }
+      });
     }else{
       const json = JSON.stringify(this.state.currentPoste).split('"value":').join('"id":');
       const data = JSON.parse(json);
@@ -543,7 +553,7 @@ class CreatePoste extends Component {
         this.uploadFile(this.state.fichierContratBrut, resp.data.salarie.id, resp.data.id);
       }).catch((e) => { console.log(e)})
       //this.uploadFile(this.state.fichierContratBrut, 1, 100);
-    }*/
+    }
   }
 
   render() {
