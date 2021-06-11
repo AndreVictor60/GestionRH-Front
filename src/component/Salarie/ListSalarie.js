@@ -12,11 +12,14 @@ class ListSalarie extends Component {
     super(props);
     this.retrieveSalaries = this.retrieveSalaries.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.searchEmployee = this.searchEmployee.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.state = {
       salaries: [],
       itemsPerPage: 5,
       currentPage: 0,
-      pageCount: 0
+      pageCount: 0,
+      searchExpression: ""
     };
   }
 
@@ -26,11 +29,11 @@ class ListSalarie extends Component {
 
 
   retrieveSalaries() {
-    SalariesService.count().then((resp) => {
-       let nbPage = Math.ceil(resp.data / this.state.itemsPerPage)
-       this.setState({pageCount: nbPage })
-    }).catch((e) => { console.log(e)});
-    SalariesService.getAllSalariesByPage(this.state.currentPage,this.state.itemsPerPage)
+    SalariesService.count(this.state.searchExpression).then((resp) => {
+      let nbPage = Math.ceil(resp.data / this.state.itemsPerPage)
+      this.setState({ pageCount: nbPage })
+    }).catch((e) => { console.log(e) });
+    SalariesService.getAllSalariesByKeywordPerPage(this.state.currentPage, this.state.itemsPerPage,this.state.searchExpression)
       .then((response) => {
         this.setState({
           salaries: response.data,
@@ -49,10 +52,42 @@ class ListSalarie extends Component {
     });
   };
 
+  searchEmployee(e) {
+    e.preventDefault();
+    this.retrieveSalaries();
+  }
+
+  handleChange(e) {
+    const target = e.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+    if (name === "searchExpression") {
+      this.setState({searchExpression: value}) 
+    }
+  }
+
+
   render() {
     const { salaries } = this.state;
     return (
       <>
+        <div className="row justify-content-between mt-4">
+          <form name="searchEmployee" onSubmit={this.searchEmployee} className="col-md-8">
+            <div className="input-group mb-2">
+              <input type="text" id="search-expression"
+                name="searchExpression" placeholder="Saisir votre recherche.." onChange={this.handleChange} className="form-control" />
+              <span className="input-group-prepend">
+              <CButton type="submit" block color="info">
+                Recherche
+              </CButton>
+              </span>
+            </div>
+          </form>
+          <form className="col-md-2 ">
+            <select  className="custom-select">
+            </select>
+          </form>
+        </div>
         <div className="row mt-4">
           <div className="col-lg-12">
             <table className="table table-hover table-striped table-bordered">
@@ -73,8 +108,8 @@ class ListSalarie extends Component {
                     <td>
                       {salarie.postes.length !== 0
                         ? compareDateStringWithDateCurrent(
-                            salarie.postes[0].dateFin
-                          )
+                          salarie.postes[0].dateFin
+                        )
                           ? salarie.postes[0].typeContrat.type
                           : ""
                         : ""}
@@ -82,32 +117,28 @@ class ListSalarie extends Component {
                     <td>
                       {salarie.postes.length !== 0
                         ? compareDateStringWithDateCurrent(
-                            salarie.postes[0].dateFin
-                          )
+                          salarie.postes[0].dateFin
+                        )
                           ? salarie.postes[0].titrePoste.intitule
                           : ""
                         : ""}
                     </td>
                     <td>
-                      {salarie.postes.length !== 0
-                        ? compareDateStringWithDateCurrent(
-                            salarie.postes[0].dateFin
-                          )
-                          ? salarie.postes[0].manager === null
-                            ? salarie.postes[0].manager.nom +
-                              " " +
-                              salarie.postes[0].manager.prenom
-                            : ""
-                          : ""
-                        : ""}
+                      {salarie.postes.length !== 0 ?
+                        compareDateStringWithDateCurrent(salarie.postes[0].dateFin) ?
+                          salarie.postes[0].manager === null ? salarie.postes[0].manager.nom + " " + salarie.postes[0].manager.prenom :
+                            salarie.postes[0].manager.nom + " " + salarie.postes[0].manager.prenom :
+                          "" :
+                        ""
+                      }
                     </td>
                     <td>
                       {salarie.postes.length !== 0
                         ? compareDateStringWithDateCurrent(
-                            salarie.postes[0].dateFin
-                          )
+                          salarie.postes[0].dateFin
+                        )
                           ? salarie.postes[salarie.postes.length - 1]
-                              .lieuTravail.nom
+                            .lieuTravail.nom
                           : ""
                         : ""}
                     </td>

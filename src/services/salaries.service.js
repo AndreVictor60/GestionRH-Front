@@ -11,7 +11,7 @@ class SalariesService {
     return axios.get(API_URL + `/${page}/${size}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
 
-  getAllSalariesByFirstnamePerPage(page, size, name) {
+  getAllSalariesByKeywordPerPage(page, size, name) {
     return axios.get(API_URL + `/${page}/${size}/${name}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
   /* findBySalarie() {
@@ -50,9 +50,10 @@ class SalariesService {
     return axios.put(API_URL + "/without-password", data, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*", 'Content-Type': 'application/json' } });
   }
 
-  count() {
-    return axios.get(API_URL + `/count`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
+  count(search) {
+    return axios.get(API_URL + `/count/${search}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
+
 }
 
 export default new SalariesService();
