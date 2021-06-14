@@ -15,6 +15,7 @@ class ListEntretien extends Component {
         itemsPerPage: 5,
         currentPage: 0,
         pageCount: 0,
+        searchExpression: ""
       };
       moment.locale('fr',momentFR );
     }

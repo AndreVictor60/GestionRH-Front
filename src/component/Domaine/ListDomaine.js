@@ -1,4 +1,4 @@
-import { CButton } from "@coreui/react";
+import { CButton,CSelect } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
@@ -11,11 +11,14 @@ class ListDomaine extends Component {
     this.retrieveDomaine = this.retrieveDomaine.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
     this.ifdelete = this.ifdelete.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.searchDomain = this.searchDomain.bind(this);
     this.state = {
       domaines: [],
       itemsPerPage: 5,
       currentPage: 0,
       pageCount: 0,
+      searchExpression: ""
     };
   }
 
@@ -24,7 +27,7 @@ class ListDomaine extends Component {
   }
 
   retrieveDomaine() {
-    DomaineService.countDomaine()
+    DomaineService.countDomaine(this.state.searchExpression)
       .then((resp) => {
         let nbPage = Math.ceil(resp.data / this.state.itemsPerPage);
         this.setState({ pageCount: nbPage });
@@ -32,9 +35,10 @@ class ListDomaine extends Component {
       .catch((e) => {
         console.log(e);
       });
-    DomaineService.getAllDomaineByPage(
+    DomaineService.getAllDomaineByPageAndKeyword(
       this.state.currentPage,
-      this.state.itemsPerPage
+      this.state.itemsPerPage,
+      this.state.searchExpression
     )
       .then((response) => {
         this.setState({
@@ -53,6 +57,11 @@ class ListDomaine extends Component {
       this.retrieveDomaine();
     });
   };
+
+  searchDomain(e) {
+    e.preventDefault();
+    this.retrieveDomaine();
+  }
 
   ifdelete(domaine) {
     swal({
@@ -89,10 +98,48 @@ class ListDomaine extends Component {
     });
   }
 
+  handleChange(e) {
+    const target = e.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+    if (name === "searchExpression") {
+      this.setState({searchExpression: value}) 
+    }
+    if( name === "nbPage"){
+      this.setState({itemsPerPage: value}, () => {this.retrieveDomaine();}) 
+    }
+  }
+
   render() {
     const { domaines } = this.state;
     return (
       <>
+        <div className="row justify-content-between mt-4">
+          <form name="searchEmployee" onSubmit={this.searchDomain} className="col-md-8">
+            <div className="input-group mb-2">
+              <input type="text" id="search-expression"
+                name="searchExpression" placeholder="Saisir votre recherche.." onChange={this.handleChange} className="form-control" />
+              <span className="input-group-prepend">
+              <CButton type="submit" block color="info">
+                Recherche
+              </CButton>
+              </span>
+            </div>
+          </form>
+          <form name="nbPageForm" className="col-md-2 ">
+          <CSelect
+                    custom
+                    name="nbPage"
+                    id="nbPage"
+                    onChange={this.handleChange}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </CSelect>
+          </form>
+        </div>
         <div className="row mt-4">
           <div className="col-lg-12">
             <table className="table table-hover table-striped table-bordered">

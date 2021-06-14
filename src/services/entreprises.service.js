@@ -16,6 +16,10 @@ class EntreprisesService {
         return axios.get(API_URL + `/${page}/${size}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
     }
 
+    getAllEntreprisesPageAndKeyword(page, size, search) {
+        return axios.get(API_URL + `/${page}/${size}/${search}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
+    }
+
     getEntrepriseById(id) {
         return axios.get(API_URL + `/${id}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
     }
@@ -29,8 +33,8 @@ class EntreprisesService {
         return axios.get(API_URL + `/adresse/${id}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
     }
 
-    count() {
-        return axios.get(API_URL + `/count`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
+    count(search) {
+        return axios.get(API_URL + `/count/${search}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
     }
 
     save(data) {

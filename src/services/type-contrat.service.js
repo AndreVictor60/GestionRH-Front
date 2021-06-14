@@ -10,14 +10,17 @@ class TypeContratService {
   getAllTypeContratByPage(page, size) {
     return axios.get(API_URL + `/${page}/${size}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
+  getAllTypeContratByPageAndKeyword(page, size,search) {
+    return axios.get(API_URL + `/${page}/${size}/${search}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
+  }
   getTypeContratById(id) {
     return axios.get(API_URL + `/${id}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
   getTypeContratByName(recherche) {
     return axios.get(API_URL + `/search?name=${recherche}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
-  count() {
-    return axios.get(API_URL + `/count`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
+  count(search) {
+    return axios.get(API_URL + `/count/${search}`, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });
   }
   save(data) {
     return axios.post(API_URL, data, { headers: { Authorization: authHeader(), "Access-Control-Allow-Origin": "*" } });

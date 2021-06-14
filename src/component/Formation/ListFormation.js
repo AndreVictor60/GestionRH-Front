@@ -13,6 +13,8 @@ class ListFormation extends Component {
             itemsPerPage: 5,
             currentPage: 0,
             pageCount: 0,
+            firstDate: "2020-04-02",
+            lastDate:"2021-05-16"
         }
     }
 
@@ -21,15 +23,17 @@ class ListFormation extends Component {
     }
 
     retrieveFormation() {
-      FormationService.countFormation().then((resp) => {
+      FormationService.countFormation(this.state.firstDate,this.state.lastDate).then((resp) => {
         let nbPage = Math.ceil(resp.data / this.state.itemsPerPage)
         this.setState({pageCount: nbPage })
+        console.log(resp.data)
      }).catch((e) => { console.log(e)});
-        FormationService.getAllFormationByPage(this.state.currentPage,this.state.itemsPerPage)
+        FormationService.getFormationPeriodByPage(this.state.currentPage,this.state.itemsPerPage,this.state.firstDate,this.state.lastDate)
         .then(response => {
             this.setState({
                 formations: response.data
             })
+            console.log(response.data)
         })
         .catch(e => {
           console.log(e);
@@ -45,7 +49,6 @@ class ListFormation extends Component {
     
     render() {
         const { formations } = this.state;
-
         return (
             <div className="row mt-4">
               <div className="col-lg-12">

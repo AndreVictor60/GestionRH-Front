@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { CButton } from "@coreui/react";
+import { CButton,CSelect } from "@coreui/react";
 import { Link } from "react-router-dom";
 import SalariesService from "../../services/salaries.service";
 import { compareDateStringWithDateCurrent } from "../../utils/fonctions";
@@ -38,7 +38,6 @@ class ListSalarie extends Component {
         this.setState({
           salaries: response.data,
         });
-        console.log("response.data", response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -64,8 +63,11 @@ class ListSalarie extends Component {
     if (name === "searchExpression") {
       this.setState({searchExpression: value}) 
     }
+    if( name === "nbPage"){
+      this.setState({itemsPerPage: value}, () => {this.retrieveSalaries();}) 
+    }
   }
-
+  
 
   render() {
     const { salaries } = this.state;
@@ -84,8 +86,17 @@ class ListSalarie extends Component {
             </div>
           </form>
           <form className="col-md-2 ">
-            <select  className="custom-select">
-            </select>
+          <CSelect
+                    custom
+                    name="nbPage"
+                    id="nbPage"
+                    onChange={this.handleChange}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </CSelect>
           </form>
         </div>
         <div className="row mt-4">
