@@ -8,6 +8,10 @@ class PosteService {
         return axios.get(API_URL , { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }
 
+    getAllCurrentPoste(sortBy,order) {
+        return axios.get(API_URL + `/poste-actuel?sortBy=${sortBy}&order=${order}` , { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+    }
+
     getAllPosteByPage(page,size) {
         return axios.get(API_URL + `/${page}/${size}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }

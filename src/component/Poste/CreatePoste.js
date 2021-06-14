@@ -534,6 +534,7 @@ class CreatePoste extends Component {
     PosteService.uploadFile(formData)
     .then((response) => {
       console.log("message file : ",response.data.message);
+      this.props.history.push("/poste/liste");
     })
     .catch((e) => {
       console.log("erreur file : ",e);
@@ -541,9 +542,10 @@ class CreatePoste extends Component {
   }
 
   ifSAlariePoste(idsalarie){
-    console.log("idsalarie : ",typeof(idsalarie))
+    //console.log("idsalarie : ",idsalarie)
     if(idsalarie !== "0"){
       const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(idsalarie));
+      //console.log("salarie IF poste : ",this.state.salaries.find(salarie => salarie.id === parseInt(idsalarie)))
       if(salarie.postes.length === 0){
         this.setState((prevState) => ({
           errors: {
@@ -587,7 +589,7 @@ class CreatePoste extends Component {
     //this.cloturerAncienPoste(this.state.currentPoste)
     //date fin obligatoire sauf CDI
     //ajouter champ "maitre d'apprentissage" dans poste de type salarieDto
-    if(this.ifSAlariePoste(this.state.currentPoste)){
+    if(this.ifSAlariePoste(this.state.currentPoste.salarie.id)){
       const salarie = this.state.salaries.find(salarie => salarie.id === parseInt(this.state.currentPoste.salarie.id));
       swal({
         title: "Êtes-vous sûre ?",
