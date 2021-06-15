@@ -22,6 +22,7 @@ class UpdatePoste extends Component {
       errors: { dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null, dateInfAujDHui: null, salarieAcPoste: null },
       salaries: [],
       domaines: [],
+      domainePosteComp: null,
       domainePoste: null,
       competencesPoste: [],
       titresPoste: [],
@@ -80,6 +81,10 @@ class UpdatePoste extends Component {
           currentPoste: response.data
         });
         console.log("data : ", response.data);
+        this.setState({
+          domainePosteComp: this.sortByFrequency(response.data.competencesRequises.map( comp => comp.domaines.map( dom => dom.id) ))[0]
+        });
+        this.getAllCompetenceByDomaine(this.sortByFrequency(response.data.competencesRequises.map( comp => comp.domaines.map( dom => dom.id) ))[0]);
       })
       .catch(e => {
         console.log(e);
@@ -624,9 +629,22 @@ class UpdatePoste extends Component {
     }
   }
 
+  sortByFrequency(arr){
+    const frequency = {};
+    arr.forEach(item => {
+        frequency[item] = (frequency[item] || 0) + 1;
+    });
+    const sortable = arr.map(item => [item, frequency[item]]);
+    sortable.sort((a,b) => {
+      if (a[1] === b[1]) return a[0] - b[0];
+      return b[1] - a[1];
+    });
+    return sortable.map(s => s[0]);
+  }
+
   render() {
-    const { posteId, salaries, titresPoste, typesContrat, entreprises, managers, competences, maitresApprentissage, domaines, currentPoste } = this.state;
-    console.log("poste html : ",currentPoste.competencesRequises);
+    const { posteId, salaries, titresPoste, typesContrat, entreprises, managers, competences, maitresApprentissage, domaines, currentPoste, domainePosteComp } = this.state;
+    console.log("comp : ",competences);
     return (
       <>
         <p>Modif : {posteId}</p>
@@ -639,8 +657,8 @@ class UpdatePoste extends Component {
                 <CSelect custom name="titrePoste" id="titrePoste" onChange={this.onChangeDomaine} required>
                   <option value="0">Veuillez sélectionner un Domaine</option>
                   {domaines.map((domaine, key) => (
-                    currentPoste.competencesRequises.map( comp => parseInt(comp.domaines.id) === parseInt(domaine.id)) ?
-                    <option selected key={key} selected={domaine.id}>
+                    parseInt(domainePosteComp) === parseInt(domaine.id) ?
+                    <option defaultValue key={key} selected={domaine.id}>
                       {domaine.titre}
                     </option>
                     :
@@ -653,7 +671,7 @@ class UpdatePoste extends Component {
             </div>
           </div>
           <form name="createPoste" onSubmit={this.savePoste} >
-            <div className="row d-none" id="competenceFormPoste">
+            <div className="row" id="competenceFormPoste">
               <div className="col">
                 <div className="form-group">
                   <label htmlFor="skills">Compétences *</label>
@@ -669,7 +687,7 @@ class UpdatePoste extends Component {
                 </div>
               </div>
             </div>
-            <div className="form-group d-none" id="bodyFormPoste">
+            <div className="form-group" id="bodyFormPoste">
               <div className="row">
                 <div className="col">
                   <div className="form-group">
