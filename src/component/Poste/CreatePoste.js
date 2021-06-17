@@ -79,7 +79,7 @@ class CreatePoste extends Component {
               id: null
             },
             competencesRequises: [],
-            maitreAppretissage: {
+            maitreApprentissage: {
               id: null
             },
           }
@@ -482,7 +482,7 @@ class CreatePoste extends Component {
       this.setState((prevState) => ({
         currentPoste: {
           ...prevState.currentPoste,
-          maitreAppretissage: {
+          maitreApprentissage: {
             id: idMaitresApprentissage
           }
         }
@@ -799,8 +799,8 @@ class CreatePoste extends Component {
                 <div className="row">
                   <div className="col">
                     <div className="form-group">
-                      <label htmlFor="manager">Maitre d'apprentissage</label>
-                      <CSelect custom name="manager" id="manager" onChange={this.onChangeMaitreApprentissage} required>
+                      <label htmlFor="maitreApprentissage">Maitre d'apprentissage</label>
+                      <CSelect custom name="maitreApprentissage" id="maitreApprentissage" onChange={this.onChangeMaitreApprentissage} required>
                         <option value="0">Veuillez sélectionner un maitre d'apprentissage</option>
                         {maitresApprentissage.map((maitreApprentissage, key) => (
                           <option key={key} value={maitreApprentissage.id}>
