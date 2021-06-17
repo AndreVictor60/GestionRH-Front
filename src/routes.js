@@ -41,6 +41,7 @@ const UpdatePoste = React.lazy(() => import('./views/poste/modification-poste'))
 const AllEntretien = React.lazy(() => import('./views/entretiens/allEntretiens'));
 const CreateEntretien = React.lazy(() => import('./views/entretiens/createEntretien'));
 const UpdateEntretien = React.lazy(() => import('./views/entretiens/updateEntretien'));
+const AllSalariesTest = React.lazy(() => import('./views/salaries/listSalarieTest'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home', component: Dashboard },
@@ -49,6 +50,7 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/salaries', exact: true, name: 'Salaries', component: AllSalaries },
   { path: '/salaries/liste', name: 'Listes des salaries', component: AllSalaries },
+  { path: '/salaries/listetest', name: 'Listes des salaries test', component: AllSalariesTest },
   { path: '/salaries/creation', name: 'Ajout dun salarie', component: AddSalarie },
   { path: '/salaries/profil/:id', exact: true, name: 'Profil', component: ProfilSalarie },
   { path: '/salaries/modification/:id', exact: true, name: 'Modification d\'un salarié', component: UpdateSalarie },
