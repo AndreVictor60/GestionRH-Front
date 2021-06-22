@@ -29,7 +29,8 @@ class CreatePoste extends Component {
     this.onChangeDateFin = this.onChangeDateFin.bind(this);
     this.onChangeVolumeHoraire = this.onChangeVolumeHoraire.bind(this);
     this.onChangeTypeHoraire = this.onChangeTypeHoraire.bind(this);
-    this.onChangeEntreprise = this.onChangeEntreprise.bind(this);
+    this.onChangeLieuTravail = this.onChangeLieuTravail.bind(this);
+    this.getAllLieuTravail = this.getAllLieuTravail.bind(this);
     this.onChangeManager = this.onChangeManager.bind(this);
     this.onChangeCompetence = this.onChangeCompetence.bind(this);
     this.getAllCompetenceByDomaine = this.getAllCompetenceByDomaine.bind(this);
@@ -48,7 +49,7 @@ class CreatePoste extends Component {
       domainePoste: null,
       titresPoste: [],
       typesContrat: [],
-      entreprises: [],
+      lieuxTravail: [],
       managers: [],
       maitresApprentissage: [],
       multiValue: [],
@@ -90,7 +91,7 @@ class CreatePoste extends Component {
     //this.getAllSalarieWithoutPoste();
     this.getAllTitrePoste();
     this.getAllTypeContrat();
-    this.getAllEntreprise();
+    this.getAllLieuTravail();
     this.getAllManager();
     this.getAllMaitreApprentissage();
   }
@@ -436,24 +437,24 @@ class CreatePoste extends Component {
     }
   }
 
-  onChangeEntreprise(e) {
-    const idEntreprise = e.target.value;
-    if (0 !== idEntreprise) {
+  onChangeLieuTravail(e) {
+    const idLieuTravail = e.target.value;
+    if (0 !== idLieuTravail) {
       this.setState((prevState) => ({
         currentPoste: {
           ...prevState.currentPoste,
           lieuTravail: {
-            id: idEntreprise
+            id: idLieuTravail
           }
         }
       }));
     }
   }
-  getAllEntreprise() {
+  getAllLieuTravail() {
     EntrepriseService.getAllEntreprises()
       .then(response => {
         this.setState({
-          entreprises: response.data
+          lieuxTravail: response.data
         });
       })
       .catch(e => {
@@ -649,7 +650,7 @@ class CreatePoste extends Component {
   }
 
   render() {
-    const { salaries, titresPoste, typesContrat, entreprises, managers, competences, maitresApprentissage, domaines } = this.state;
+    const { salaries, titresPoste, typesContrat, lieuxTravail, managers, competences, maitresApprentissage, domaines } = this.state;
     //console.log(this.state.errors);
     return (
       <>
@@ -779,12 +780,12 @@ class CreatePoste extends Component {
               <div className="row">
                 <div className="col">
                   <div className="form-group">
-                    <label htmlFor="entreprise">Entreprise *</label>
-                    <CSelect custom name="entreprise" id="entreprise" onChange={this.onChangeEntreprise} required>
-                      <option value="0">Veuillez sélectionner une entreprise</option>
-                      {entreprises.map((entreprise, key) => (
-                        <option key={key} value={entreprise.id}>
-                          {entreprise.nom}
+                    <label htmlFor="lieuTravail">Lieu de travail *</label>
+                    <CSelect custom name="lieuTravail" id="lieuTravail" onChange={this.onChangeLieuTravail} required>
+                      <option value="0">Veuillez sélectionner un lieu de travail</option>
+                      {lieuxTravail.map((lieuTravail, key) => (
+                        <option key={key} value={lieuTravail.id}>
+                          {lieuTravail.nom}
                         </option>
                       ))}
                     </CSelect>

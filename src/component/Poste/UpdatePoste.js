@@ -7,7 +7,6 @@ import CompetenceService from "../../services/competence.service";
 import EntrepriseService from "../../services/entreprises.service";
 import DomainesService from "../../services/domaine.service";
 import Select from 'react-select';
-import swal from 'sweetalert';
 import { compareDateStringWithDateCurrent, ifNumberWithDecimal } from "src/utils/fonctions";
 /*import PDFViewer from "../PDF/PDFViewer";
 import AllPagesPDFViewer from "../PDF/all-pages-pdf";
@@ -21,7 +20,8 @@ class UpdatePoste extends Component {
     this.onChangeDateFin = this.onChangeDateFin.bind(this);
     this.onChangeVolumeHoraire = this.onChangeVolumeHoraire.bind(this);
     this.onChangeTypeHoraire = this.onChangeTypeHoraire.bind(this);
-    this.onChangeEntreprise = this.onChangeEntreprise.bind(this);
+    this.onChangeLieuTravail = this.onChangeLieuTravail.bind(this);
+    this.getAllLieuTravail = this.getAllLieuTravail.bind(this);
     this.onChangeManager = this.onChangeManager.bind(this);
     this.onGetPoste = this.onGetPoste.bind(this);
     this.onChangeCompetence = this.onChangeCompetence.bind(this);
@@ -38,7 +38,7 @@ class UpdatePoste extends Component {
       errors: { dateFinInf: null, volumeNeg: null, extensionFichier: null, envoiFichier: null, dateInfAujDHui: null, salarieAcPoste: null },
       domaines: [],
       domainePoste: null,
-      entreprises: [],
+      lieuxTravail: [],
       managers: [],
       maitresApprentissage: [],
       multiValue: [],
@@ -106,7 +106,7 @@ class UpdatePoste extends Component {
   componentDidMount() {
     this.onGetPoste(this.props.posteId.id);
     this.getAllDomaine();
-    this.getAllEntreprise();
+    this.getAllLieuTravail();
     this.getAllManager();
     this.getAllMaitreApprentissage();
   }
@@ -129,10 +129,6 @@ class UpdatePoste extends Component {
       });
   }
 
-
-
-
-
   getAllDomaine() {
     DomainesService.getAllDomaine()
       .then(response => {
@@ -144,8 +140,6 @@ class UpdatePoste extends Component {
         console.log(e);
       });
   }
-
-
 
   onChangeCompetence(e) {
     console.log("competence : ", e);
@@ -320,24 +314,24 @@ class UpdatePoste extends Component {
     }
   }
 
-  onChangeEntreprise(e) {
-    const idEntreprise = e.target.value;
-    if (0 !== idEntreprise) {
+  onChangeLieuTravail(e) {
+    const idLieuTravail = e.target.value;
+    if (0 !== idLieuTravail) {
       this.setState((prevState) => ({
         currentPoste: {
           ...prevState.currentPoste,
           lieuTravail: {
-            id: idEntreprise
+            id: idLieuTravail
           }
         }
       }));
     }
   }
-  getAllEntreprise() {
+  getAllLieuTravail() {
     EntrepriseService.getAllEntreprises()
       .then(response => {
         this.setState({
-          entreprises: response.data
+          lieuxTravail: response.data
         });
       })
       .catch(e => {
@@ -525,7 +519,7 @@ class UpdatePoste extends Component {
   }
 
   render() {
-    const { entreprises, managers, competences, maitresApprentissage, currentPoste, domaines, domainePoste } = this.state;
+    const { lieuxTravail, managers, competences, maitresApprentissage, currentPoste, domaines, domainePoste } = this.state;
     console.log("heure : ", currentPoste.volumeHoraire, " || jour : ", currentPoste.volumeJournalier);
     /*const pdflink = import('src/assets/contrat/contrat_Herduin_Corentin_1.pdf').then((resp) => {return resp.default});
     console.log("pdflink : ", pdflink);*/
@@ -675,18 +669,18 @@ class UpdatePoste extends Component {
               <div className="row">
                 <div className="col">
                   <div className="form-group">
-                    <label htmlFor="entreprise">Entreprise *</label>
-                    <CSelect custom name="entreprise" id="entreprise" onChange={this.onChangeEntreprise} required
+                    <label htmlFor="lieuTravail">Lieu de travail *</label>
+                    <CSelect custom name="lieuTravail" id="lieuTravail" onChange={this.onChangeEntreprise} required
                       value={
                         currentPoste.lieuTravail.id === null
                           ? 0
                           : currentPoste.lieuTravail.id
                       }
                     >
-                      <option value="0">Veuillez sélectionner une entreprise</option>
-                      {entreprises.map((entreprise, key) => (
-                        <option key={key} value={entreprise.id}>
-                          {entreprise.nom}
+                      <option value="0">Veuillez sélectionner un lieu de travail</option>
+                      {lieuxTravail.map((lieuTravail, key) => (
+                        <option key={key} value={lieuTravail.id}>
+                          {lieuTravail.nom}
                         </option>
                       ))}
                     </CSelect>
