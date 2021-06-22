@@ -1,7 +1,9 @@
-import { CButton } from "@coreui/react";
+import { CButton, CSelect } from "@coreui/react";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PosteService from "../../services/poste.service";
+import ReactPaginate from "react-paginate";
+import "./styles.css";
 
 /*function compareDateStringWithDateCurrent(string){
   let datePoste = new Date(string).getTime();
@@ -19,14 +21,20 @@ class ListPoste extends Component {
     //this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
     this.getPoste = this.getPoste.bind(this);
     this.getCurrentPoste = this.getCurrentPoste.bind(this);
-    this.onchangeAllPoste = this.onchangeAllPoste.bind(this);
+    this.onchangeAllPoste = this.onchangeAllPoste.bind(this); 
+    this.handlePageClick = this.handlePageClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     //this.refreshList = this.refreshList.bind(this);
     //this.searchTitle = this.searchTitle.bind(this);
 
     this.state = {
-      sortBy: "id",
-      order: "DESC",
-      postes: []
+      postes: [],
+      sortBy: "nom",
+      order: "ASC",
+      itemsPerPage: 5,
+      currentPage: 0,
+      pageCount: 0,
+      searchExpression: "",
     };
   }
 
@@ -43,37 +51,68 @@ class ListPoste extends Component {
    }*/
 
   getPoste() {
-    PosteService.getAllPoste()
-      .then(response => {
-        this.setState({
-          postes: response.data
-        });
-        console.log("response.data", response.data);
-      })
+    PosteService.countPoste().then((resp) => {
+      let nbPage = Math.ceil(resp.data / this.state.itemsPerPage);
+      this.setState({ pageCount: nbPage });
+    })
+      .catch((e) => {
+        console.log(e);
+      });
+    PosteService.getAllPosteByPage(
+      this.state.currentPage,
+      this.state.itemsPerPage,
+      this.state.order,
+      this.state.sortBy
+    ).then(response => {
+      this.setState({
+        postes: response.data
+      });
+      console.log("response.data", response.data);
+    })
       .catch(e => {
         console.log(e);
       });
   }
 
   getCurrentPoste() {
-    PosteService.getAllCurrentPoste(this.state.sortBy,this.state.order)
-      .then(response => {
-        this.setState({
-          postes: response.data
-        });
-        console.log("response.data", response.data);
-      })
+    PosteService.countCurrentPoste().then((resp) => {
+      let nbPage = Math.ceil(resp.data / this.state.itemsPerPage);
+      this.setState({ pageCount: nbPage });
+    })
+    PosteService.getAllCurrentPoste(
+      this.state.currentPage,
+      this.state.itemsPerPage,
+      this.state.order,
+      this.state.sortBy
+    ).then(response => {
+      this.setState({
+        postes: response.data
+      });
+      console.log("response.data", response.data);
+    })
       .catch(e => {
         console.log(e);
       });
   }
 
-  onchangeAllPoste(){
-    if(document.getElementById("allPosteCurrentPoste").checked){
+  onchangeAllPoste() {
+    if (document.getElementById("allPosteCurrentPoste").checked) {
       this.getPoste();
-    }else{
+    } else {
       this.getCurrentPoste();
     }
+  }
+
+  handlePageClick = (data) => {
+    let selected = data.selected;
+    this.setState({ currentPage: selected }, () => {
+      this.onchangeAllPoste();
+    });
+  };
+
+  handleChange(e) {
+    const value = e.target.value;
+    this.setState({itemsPerPage: value}, () => {this.onchangeAllPoste();}) 
   }
 
   /*searchTitle() {
@@ -88,9 +127,8 @@ class ListPoste extends Component {
         console.log(e);
       });
   }*/
-  triPar(sort){
-    //TODO: De base poste en cours et checkbox pour archive
-    /*if(this.state.sortBy === sort){
+  triPar(sort) {
+    if(this.state.sortBy === sort){
       if(this.state.order === "DESC"){
         this.setState({
           order: "ASC"
@@ -101,44 +139,67 @@ class ListPoste extends Component {
         });
       }
     }else{
-      this.setState({
-        sortBy: sort,
-        order: "ASC"
-      });
+      if(this.state.order === "DESC"){
+        this.setState({
+          sortBy: sort,
+          order: "ASC"
+        });
+      }else{
+        this.setState({
+          sortBy: sort,
+          order: "DESC"
+        });
+      }
     }
     this.onchangeAllPoste();
-    console.log("this sortBy : ",this.state.sortBy," || sort : ",sort," || this order : ", this.state.order);*/
+
   }
 
   render() {
     const { postes } = this.state;
-    console.log("postes : ", postes)
-    
+
     return (
       <>
         <div className="row mt-4">
           <div className="col-lg-12">
             <div className="form-group form-check">
-              <input type="checkbox" value="1" className="form-check-input" id="allPosteCurrentPoste" onChange={this.onchangeAllPoste} />
-              <label className="form-check-label" htmlFor="allPosteCurrentPoste">Afficher l'historique des postes</label>
+              <div className="row">
+                <div className="col">
+                  <input type="checkbox" value="1" className="form-check-input" id="allPosteCurrentPoste" onChange={this.onchangeAllPoste} />
+                  <label className="form-check-label" htmlFor="allPosteCurrentPoste">Afficher l'historique des postes</label>
+                </div>
+                <div className="form-group col-md-2 ">
+                  <CSelect
+                    custom
+                    name="nbPage"
+                    id="nbPage"
+                    onChange={this.handleChange}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </CSelect>
+                </div>
+              </div>
             </div>
             <table className="table table-hover table-striped table-bordered">
-              <thead>
+              <thead className="cursor-pointer" title="Cliquer pour trier.">
                 <tr>
                   <th onClick={() => this.triPar("nom")}>Nom prénom</th>
-                  <th onClick={() => this.triPar("titrePoste.intitule")}>Poste</th>
-                  <th onClick={() => this.triPar("typeContrat.type")}>Type de contrat</th>
-                  <th onClick={() => this.triPar("manager.nom")}>Manager</th>
-                  <th onClick={() => this.triPar("salarie.entreprise.nom")}>Entreprise</th>
-                  <th onClick={() => this.triPar("maitreAppretissage.nom")}>Maitre d'apprentissage</th>
-                  <th onClick={() => this.triPar("dateFin")}>Date du contrat</th>
+                  <th onClick={() => this.triPar("intitulePoste")}>Poste</th>
+                  <th onClick={() => this.triPar("typeContrat")}>Type de contrat</th>
+                  <th onClick={() => this.triPar("manager")}>Manager</th>
+                  <th onClick={() => this.triPar("lieuTravail")}>Lieu de travail</th>
+                  <th onClick={() => this.triPar("maitreAppretissage")}>Maitre d'apprentissage</th>
+                  <th onClick={() => this.triPar("dateDebut")}>Date du contrat</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {postes.map(poste =>
                   <tr key={poste.id}>
-                    <td>{poste.salarie.nom + " " + poste.salarie.prenom + " ("+poste.id+")"}</td>
+                    <td>{poste.salarie.nom + " " + poste.salarie.prenom}</td>
                     <td>{poste.titrePoste.intitule}</td>
                     <td>{poste.typeContrat.type}</td>
                     <td>{poste.manager != null ? poste.manager.nom + " " + poste.manager.prenom : ""}</td>
@@ -150,6 +211,26 @@ class ListPoste extends Component {
                 )}
               </tbody>
             </table>
+            <ReactPaginate
+              previousLabel={"Précédent"}
+              nextLabel={"Suivant"}
+              breakLabel={"..."}
+              pageCount={this.state.pageCount}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={4}
+              onPageChange={this.handlePageClick}
+              containerClassName="pagination"
+              activeClassName="active"
+              pageLinkClassName="page-link"
+              breakLinkClassName="page-link"
+              nextLinkClassName="page-link"
+              previousLinkClassName="page-link"
+              pageClassName="page-item"
+              breakClassName="page-item"
+              nextClassName="page-item"
+              previousClassName="page-item"
+              forcePage={this.state.currentPage}
+            />
           </div>
         </div>
       </>

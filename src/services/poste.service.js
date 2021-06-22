@@ -8,12 +8,12 @@ class PosteService {
         return axios.get(API_URL , { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }
 
-    getAllCurrentPoste(sortBy,order) {
-        return axios.get(API_URL + `/poste-actuel?sortBy=${sortBy}&order=${order}` , { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+    getAllCurrentPoste(page,size,order,sortBy) {
+        return axios.get(API_URL + `/poste-actuel/${page}/${size}/${order}/${sortBy}` , { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }
 
-    getAllPosteByPage(page,size) {
-        return axios.get(API_URL + `/${page}/${size}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+    getAllPosteByPage(page,size,order,sortBy) {
+        return axios.get(API_URL + `/${page}/${size}/${order}/${sortBy}`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }
 
     getPosteById(id) {
@@ -43,6 +43,10 @@ class PosteService {
 
     countPoste() {
         return axios.get(API_URL+ `/count`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
+    }
+
+    countCurrentPoste() {
+        return axios.get(API_URL+ `/count-current`, { headers: { Authorization : authHeader(),"Access-Control-Allow-Origin": "*" } });
     }
 
     savePoste(data) {
