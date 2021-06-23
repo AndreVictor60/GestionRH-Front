@@ -10,8 +10,11 @@ import {
   CCol,
   CRow,
 } from "@coreui/react";
+import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import moment from 'moment';
+import momentFR from 'moment/locale/fr';
 
 class Salarie extends Component {
   _isMounted = false;
@@ -44,11 +47,19 @@ class Salarie extends Component {
         postes: [],
         roles: [],
         competences: [],
+        formations: [],
         siManager: false,
         version: null,
       },
       errors: {},
+      offsetSkill: 0,
+      perPageSkill: 5,
+      pageCountSkill: 0, 
+      offsetTraining: 0,
+      perPageTraining: 5,
+      pageCountTraining: 0, 
     };
+    moment.locale('fr', momentFR);
   }
 
   componentDidMount() {
@@ -56,21 +67,27 @@ class Salarie extends Component {
     this.getSalarie(this.props.salarieId.id);
   }
 
-  componentDidUpdate(){
-    this._isMounted = true;
-    //this.getSalarie(this.props.salarieId.id);
-  }
-
-  componentWillUnmount(){
+  componentWillUnmount() {
     this._isMounted = false;
   }
 
   getSalarie(id) {
     SalariesService.getSalarieById(id)
       .then((response) => {
-        if(this._isMounted){
+        if (this._isMounted) {
           this.setState({
             currentSalarie: response.data,
+          });
+          const displaySkill = this.getPaginatedItems(this.state.currentSalarie.competences,1);
+          console.log("displaySkill",displaySkill);
+          const displayTraining = this.getPaginatedItems(this.state.currentSalarie.formations,2);
+          const pageCountSkill = Math.ceil(this.state.currentSalarie.competences.length / this.state.perPageSkill);
+          const pageCountTraining = Math.ceil(this.state.currentSalarie.formations.length / this.state.perPageTraining);
+          this.setState({
+            displaySkill,
+            displayTraining,
+            pageCountSkill,
+            pageCountTraining
           });
         }
       })
@@ -79,14 +96,46 @@ class Salarie extends Component {
       });
   }
 
-  changeProfil(e){
+  getPaginatedItems(items,type) {
+
+    if(type === 1){
+      return items.slice(this.state.offsetSkill, this.state.offsetSkill + this.state.perPageSkill);
+    }else{
+      return items.slice(this.state.offsetSkill, this.state.offsetSkill + this.state.perPageTraining);
+    }
+     
+  }
+
+  changeProfil(e) {
     const target = e.target;
     this.props.history.push(`${target.pathname}`);
     this.getSalarie(parseInt(target.id));
   }
 
+  handlePageClickSkill(data) {
+    let selected = data.selected;
+    let offset = Math.ceil(selected * this.state.perPageSkill);
+    this.setState({ offsetSkill: offset }, () => {
+      const displaySkill = this.getPaginatedItems(this.state.currentSalarie.competences);
+      this.setState({
+        displaySkill,
+      });
+    });
+  };
+
+  handlePageClickTraining(data){
+    let selected = data.selected;
+    let offset = Math.ceil(selected * this.state.perPageTraining);
+    this.setState({ offsetTraining: offset }, () => {
+      const displayTraining = this.getPaginatedItems(this.state.currentSalarie.formations);
+      this.setState({
+        displayTraining,
+      });
+    });
+  }
+
   render() {
-    const { currentSalarie } = this.state;
+    const { currentSalarie, displaySkill ,displayTraining} = this.state;
     return (
       <CRow>
         <CCol>
@@ -99,7 +148,7 @@ class Salarie extends Component {
                 <CCol lg={6}>
                   <CCard>
                     <CCardHeader>
-                    <h4><FontAwesomeIcon icon={["far", "address-card"]} /> Description</h4>
+                      <h4><FontAwesomeIcon icon={["far", "address-card"]} /> Description</h4>
                     </CCardHeader>
                     <CCardBody>
                       <table className="table table-striped table-hover">
@@ -118,7 +167,7 @@ class Salarie extends Component {
                           </tr>
                           <tr>
                             <td className="font-weight-bold">Date de naissance</td>
-                            <td>{currentSalarie.dateNaissance}</td>
+                            <td>{moment(currentSalarie.dateNaissance).format("ll")}</td>
                           </tr>
                           <tr>
                             <td className="font-weight-bold">Poste</td>
@@ -154,27 +203,25 @@ class Salarie extends Component {
                               )}
                             </td>
                           </tr>
-
                           <tr>
                             <td className="font-weight-bold">Manager</td>
                             <td>
-                              
                               {currentSalarie.postes.map(
                                 (value, indexObject) => {
                                   if (indexObject === 0) {
-                                    if(value.manager !== null){
-                                    return (
-                                      <div key={value.id}>
-                                        <Link id={value.manager.id} to={ "/salaries/profil/" + value.manager.id} onClick={this.changeProfil}>{value.manager.prenom +
-                                          " " +
-                                          value.manager.nom}
-                                          </Link>
-                                      </div>
-                                    );
-                                    }else{
-                                      return(
+                                    if (value.manager !== null) {
+                                      return (
                                         <div key={value.id}>
-                                        Aucun manager
+                                          <Link id={value.manager.id} to={"/salaries/profil/" + value.manager.id} onClick={this.changeProfil}>{value.manager.prenom +
+                                            " " +
+                                            value.manager.nom}
+                                          </Link>
+                                        </div>
+                                      );
+                                    } else {
+                                      return (
+                                        <div key={value.id}>
+                                          Aucun manager
                                         </div>
                                       )
                                     }
@@ -202,13 +249,10 @@ class Salarie extends Component {
                           </tr>
                           <tr>
                             <td className="font-weight-bold">Adresse</td>
-                            <td>{`${currentSalarie.adresse.numero} ${
-                              currentSalarie.adresse.voie
-                            } ${currentSalarie.adresse.codePostal} ${
-                              currentSalarie.adresse.ville
-                            } ${
-                              currentSalarie.adresse.complementAdresse || ""
-                            } `}</td>
+                            <td>{`${currentSalarie.adresse.numero} ${currentSalarie.adresse.voie
+                              } ${currentSalarie.adresse.codePostal} ${currentSalarie.adresse.ville
+                              } ${currentSalarie.adresse.complementAdresse || ""
+                              } `}</td>
                           </tr>
                           <tr>
                             <td className="font-weight-bold">Companie</td>
@@ -236,14 +280,14 @@ class Salarie extends Component {
                     <CCardFooter>
                       <CRow>
                         <CCol col="6" sm="4" md="2" xl className="mb-3 mb-xl-0">
-                          <CButton active block color="info" aria-pressed="true"to={"/salaries/modification/" + currentSalarie.id}>
-                          <FontAwesomeIcon icon={["far", "edit"]} /> Modifier
+                          <CButton active block color="info" aria-pressed="true" to={"/salaries/modification/" + currentSalarie.id}>
+                            <FontAwesomeIcon icon={["far", "edit"]} /> Modifier
                           </CButton>
                         </CCol>
                         <CCol col="6" sm="4" md="2" xl className="mb-3 mb-xl-0">
-                          <Link to={{pathname: "/salaries/updatePassword", state: currentSalarie}}>
+                          <Link to={{ pathname: "/salaries/updatePassword", state: currentSalarie }}>
                             <CButton type="button" block color="info">
-                            <FontAwesomeIcon icon={["fas", "lock"]} /> Modifier le mot de passe
+                              <FontAwesomeIcon icon={["fas", "lock"]} /> Modifier le mot de passe
                             </CButton>
                           </Link>
                         </CCol>
@@ -264,40 +308,52 @@ class Salarie extends Component {
                                 <th>Date de début </th>
                                 <th>Date de fin</th>
                                 <th>Volume horaire</th>
-                                <th>Forfait jour</th>
+                                <th>Prix <small>(HT)</small></th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>Développeur J2EE</td>
-                                <td>28/11/2020</td>
-                                <td>25/02/2021</td>
-                                <td>399</td>
-                                <td></td>
-                              </tr>
-                              <tr>
-                                <td>Développeur J2EE</td>
-                                <td>28/11/2020</td>
-                                <td>25/02/2021</td>
-                                <td>399</td>
-                                <td></td>
-                              </tr>
-                              <tr>
-                                <td>Développeur J2EE</td>
-                                <td>28/11/2020</td>
-                                <td>25/02/2021</td>
-                                <td>399</td>
-                                <td></td>
-                              </tr>
+                              {displayTraining &&
+                                displayTraining.map((t) => {
+                                  return (
+                                    <tr key={t.id}>
+                                      <td>{t.titre}</td>
+                                      <td>{moment(t.dateDebut).format("ll")}</td>
+                                      <td>{moment(t.dateFin).format("ll")}</td>
+                                      <td>{t.duree}</td>
+                                      <td>{t.prix}</td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
+                          <ReactPaginate
+                          name="test"
+                            previousLabel={'Précédent'}
+                            nextLabel={'Suivant'}
+                            breakLabel={'...'}
+                            pageCount={this.state.pageCountTraining}
+                            pageRangeDisplayed={5}
+                            marginPagesDisplayed={2}
+                            onPageChange={this.handlePageClickTraining.bind(this)}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                            pageLinkClassName="page-link"
+                            breakLinkClassName="page-link"
+                            nextLinkClassName="page-link"
+                            previousLinkClassName="page-link"
+                            pageClassName="page-item"
+                            breakClassName="page-item"
+                            nextClassName="page-item"
+                            previousClassName="page-item"
+                          />
                         </CCardBody>
                       </CCard>
                     </CCol>
                   </CRow>
                   <CRow>
                     <CCol lg={12}>
-                      <CCard>
+                      <CCard className=" mt-3">
                         <CCardHeader><h4><FontAwesomeIcon icon={["fas", "list"]} /> Liste des competences</h4></CCardHeader>
                         <CCardBody>
                           <table className="table table-striped table-hover">
@@ -307,15 +363,37 @@ class Salarie extends Component {
                               </tr>
                             </thead>
                             <tbody>
-                              {currentSalarie.competences.map((d) => {
-                                return (
-                                  <tr key={d.id}>
-                                    <td>{d.nom}</td>
-                                  </tr>
-                                );
-                              })}
+                              {displaySkill && 
+                                displaySkill.map((d) => {
+                                  return (
+                                    <tr key={d.id}>
+                                      <td>{d.nom}</td>
+                                    </tr>
+                                  );
+                                })
+                              }
                             </tbody>
                           </table>
+                          <ReactPaginate
+                            previousLabel={'Précédent'}
+                            nextLabel={'Suivant'}
+                            breakLabel={'...'}
+                            pageCount={this.state.pageCountSkill}
+                            pageRangeDisplayed={5}
+                            marginPagesDisplayed={2}
+                            onPageChange={this.handlePageClickSkill.bind(this)}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                            pageLinkClassName="page-link"
+                            breakLinkClassName="page-link"
+                            nextLinkClassName="page-link"
+                            previousLinkClassName="page-link"
+                            pageClassName="page-item"
+                            breakClassName="page-item"
+                            nextClassName="page-item"
+                            previousClassName="page-item"
+                          />
                         </CCardBody>
                       </CCard>
                     </CCol>

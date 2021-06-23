@@ -5,7 +5,6 @@ import FormationService from '../../services/formations.service';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import getDay from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import fr from "date-fns/locale/fr";
@@ -31,10 +30,7 @@ class ListFormation extends Component {
       searchExpression: ""
     }
   }
-  isWeekday = (date) => {
-    const day = getDay(date)
-    return day !== 0 && day !== 6
-  }
+
   componentDidMount() {
     this.retrieveFormation();
   }
@@ -140,7 +136,7 @@ class ListFormation extends Component {
               todayButton="Aujourd'hui"
               placeholderText="Sélectionner une date"
               locale="fr"
-              filterDate={this.isWeekday}
+
             />
           </div>
           <div className="col-md-2">
@@ -195,7 +191,7 @@ class ListFormation extends Component {
             </table>
             <ReactPaginate
               previousLabel={'Précédent'}
-              nextLabel={'Suivant'}
+              nextLabel={'Suivant'} 
               breakLabel={'...'}
               pageCount={this.state.pageCount}
               marginPagesDisplayed={1}
