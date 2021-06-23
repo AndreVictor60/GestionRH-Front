@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import moment from 'moment';
 import momentFR from 'moment/locale/fr';
+import { connect } from "react-redux";
 
 class Salarie extends Component {
   _isMounted = false;
@@ -136,6 +137,7 @@ class Salarie extends Component {
 
   render() {
     const { currentSalarie, displaySkill ,displayTraining} = this.state;
+    const { isRole } = this.props;
     return (
       <CRow>
         <CCol>
@@ -284,13 +286,14 @@ class Salarie extends Component {
                             <FontAwesomeIcon icon={["far", "edit"]} /> Modifier
                           </CButton>
                         </CCol>
-                        <CCol col="6" sm="4" md="2" xl className="mb-3 mb-xl-0">
+                        {isRole === 1 && (<CCol col="6" sm="4" md="2" xl className="mb-3 mb-xl-0">
                           <Link to={{ pathname: "/salaries/updatePassword", state: currentSalarie }}>
                             <CButton type="button" block color="info">
                               <FontAwesomeIcon icon={["fas", "lock"]} /> Modifier le mot de passe
                             </CButton>
                           </Link>
-                        </CCol>
+                        </CCol>)}
+                        
                       </CRow>
                     </CCardFooter>
                   </CCard>
@@ -407,5 +410,10 @@ class Salarie extends Component {
     );
   }
 }
-
-export default withRouter(Salarie);
+function mapStateToProps(state) {
+  const { isRole } = state.authen;
+  return {
+    isRole,
+  };
+}
+export default withRouter( connect(mapStateToProps)(Salarie) );

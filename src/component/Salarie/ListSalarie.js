@@ -6,6 +6,7 @@ import { compareDateStringWithDateCurrent } from "../../utils/fonctions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faEye } from "@fortawesome/free-solid-svg-icons";
 import ReactPaginate from 'react-paginate';
+import { connect } from "react-redux";
 
 class ListSalarie extends Component {
   constructor(props) {
@@ -25,8 +26,9 @@ class ListSalarie extends Component {
 
   componentDidMount() {
     this.retrieveSalaries();
+    console.log("isRole",this.props.isRole);
   }
-
+  
 
   retrieveSalaries() {
     SalariesService.count(this.state.searchExpression).then((resp) => {
@@ -71,6 +73,7 @@ class ListSalarie extends Component {
 
   render() {
     const { salaries } = this.state;
+    const { isRole } = this.props;
     console.log(salaries)
     return (
       <>
@@ -159,7 +162,7 @@ class ListSalarie extends Component {
                           <FontAwesomeIcon icon={faEye} /> Voir
                         </CButton>
                       </Link>{" "}
-                      <Link to={"/salaries/modification/" + salarie.id}>
+                      {isRole <= 2  && (<Link to={"/salaries/modification/" + salarie.id}>
                         <CButton
                           className="mr-2"
                           color="info"
@@ -167,7 +170,8 @@ class ListSalarie extends Component {
                         >
                           <FontAwesomeIcon icon={faEdit} /> Modifier
                         </CButton>
-                      </Link>
+                      </Link>)}
+                      
                     </td>
                   </tr>
                 ))}
@@ -199,5 +203,10 @@ class ListSalarie extends Component {
     );
   }
 }
-
-export default ListSalarie;
+function mapStateToProps(state) {
+  const { isRole } = state.authen;
+  return {
+    isRole,
+  };
+}
+export default connect(mapStateToProps)(ListSalarie);

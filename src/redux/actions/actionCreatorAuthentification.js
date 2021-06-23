@@ -8,13 +8,12 @@ import {
   import AuthService from "../../services/auth.service";
   import jwt_decode from 'jwt-decode';
   
-  
   export const login = (email, password) => (dispatch) => {
     return AuthService.login(email, password).then(
       (data) => {
         dispatch({
           type: LOGIN_SUCCESS,
-          payload: { user: jwt_decode(data.token) },
+          payload: { user: data.token },
         });
   
         return Promise.resolve();
