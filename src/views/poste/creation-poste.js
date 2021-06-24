@@ -2,7 +2,6 @@ import React from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -14,9 +13,6 @@ const CreationPoste = () => {
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>
-            Création d'un poste
-          </CCardHeader>
           <CCardBody>
             <CreatePoste />
           </CCardBody>

@@ -55,10 +55,9 @@ class ListPoste extends Component {
     PosteService.countPoste().then((resp) => {
       let nbPage = Math.ceil(resp.data / this.state.itemsPerPage);
       this.setState({ pageCount: nbPage });
-    })
-      .catch((e) => {
-        console.log(e);
-      });
+    }).catch((e) => {
+      console.log(e);
+    });
     PosteService.getAllPosteByPage(
       this.state.currentPage,
       this.state.itemsPerPage,
@@ -157,8 +156,7 @@ class ListPoste extends Component {
   }
 
   render() {
-    const { postes } = this.state;
-
+    const { postes, pageCount } = this.state;
     return (
       <>
         <div className="row mt-4">
@@ -198,7 +196,9 @@ class ListPoste extends Component {
                 </tr>
               </thead>
               <tbody>
-                {postes.map(poste =>
+                {postes.length === 0 ?
+                <tr><td colSpan = "8" className="text-center font-weight-bold">Aucun poste</td></tr> : 
+                postes.map(poste =>
                   <tr key={poste.id}>
                     <td>{poste.salarie.nom + " " + poste.salarie.prenom}</td>
                     <td>{poste.titrePoste.intitule}</td>
@@ -212,26 +212,28 @@ class ListPoste extends Component {
                 )}
               </tbody>
             </table>
-            <ReactPaginate
-              previousLabel={"Précédent"}
-              nextLabel={"Suivant"}
-              breakLabel={"..."}
-              pageCount={this.state.pageCount}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={4}
-              onPageChange={this.handlePageClick}
-              containerClassName="pagination"
-              activeClassName="active"
-              pageLinkClassName="page-link"
-              breakLinkClassName="page-link"
-              nextLinkClassName="page-link"
-              previousLinkClassName="page-link"
-              pageClassName="page-item"
-              breakClassName="page-item"
-              nextClassName="page-item"
-              previousClassName="page-item"
-              forcePage={this.state.currentPage}
-            />
+            {pageCount > 1 ? 
+              <ReactPaginate
+                previousLabel={"Précédent"}
+                nextLabel={"Suivant"}
+                breakLabel={"..."}
+                pageCount={this.state.pageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={4}
+                onPageChange={this.handlePageClick}
+                containerClassName="pagination"
+                activeClassName="active"
+                pageLinkClassName="page-link"
+                breakLinkClassName="page-link"
+                nextLinkClassName="page-link"
+                previousLinkClassName="page-link"
+                pageClassName="page-item"
+                breakClassName="page-item"
+                nextClassName="page-item"
+                previousClassName="page-item"
+                forcePage={this.state.currentPage}
+              /> 
+            : null}
           </div>
         </div>
       </>
