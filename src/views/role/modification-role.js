@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -20,9 +19,6 @@ class updateRole extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modifier un rôle
-              </CCardHeader>
               <CCardBody>
                 <UpdateRole roleId={this.props.match.params} />
               </CCardBody>

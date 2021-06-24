@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class createEntretien extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modification d'un entretien
-              </CCardHeader>
               <CCardBody>
                 <UpdateEntretien entretienid={this.props.match.params} />
               </CCardBody>

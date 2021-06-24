@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class updateFormation extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modification d'une formation
-              </CCardHeader>
               <CCardBody>
                 <UpdateFormation formationid={this.props.match.params} />
               </CCardBody>

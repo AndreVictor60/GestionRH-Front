@@ -69,9 +69,11 @@ class Salarie extends Component {
     this.getSalarie(this.props.salarieId.id);
     this.unlisten = this.props.history.listen((location, action) => {
       if (location !== null && location !== undefined) {
-        if (location.state !== this.state.currentSalarie.id) {
-          this.getSalarie(location.state);
-        }
+        if(location.state !== null && location.state !== undefined){
+          if (location.state !== this.state.currentSalarie.id) {
+            this.getSalarie(location.state);
+          }
+        };
       }
     });
   }
@@ -105,13 +107,11 @@ class Salarie extends Component {
   }
 
   getPaginatedItems(items, type) {
-
     if (type === 1) {
       return items.slice(this.state.offsetSkill, this.state.offsetSkill + this.state.perPageSkill);
     } else {
       return items.slice(this.state.offsetSkill, this.state.offsetSkill + this.state.perPageTraining);
     }
-
   }
 
   changeProfil(e) {
@@ -146,7 +146,6 @@ class Salarie extends Component {
     const { currentSalarie, displaySkill, displayTraining } = this.state;
     const { isRole,user } = this.props;
     const userDecode = jwt_decode(user);
-    console.log(userDecode);
     return (
       <CRow>
         <CCol>

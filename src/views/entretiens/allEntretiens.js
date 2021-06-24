@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
   CButton,
@@ -19,9 +18,6 @@ class AllEntretiens extends Component {
         <CRow>
           <CCol lg="12">
             <CCard>
-              <CCardHeader>
-                Listes des entretiens
-              </CCardHeader>
               <CCardBody>
               <CRow className="align-items-right mt-3">
                 <CCol xl md={{ span: 2, offset: 10 }}>

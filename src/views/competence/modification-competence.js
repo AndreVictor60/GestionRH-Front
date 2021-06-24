@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,7 @@ class updateCompetence extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modifier une compétence
-              </CCardHeader>
+
               <CCardBody>
                 <UpdateCompetence competenceId={this.props.match.params} />
               </CCardBody>

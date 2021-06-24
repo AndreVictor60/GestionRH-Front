@@ -3,7 +3,6 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
 } from "@coreui/react";
@@ -17,7 +16,6 @@ export class listFormation extends Component {
         <CRow>
           <CCol lg="12">
             <CCard>
-              <CCardHeader>Listes des formations</CCardHeader>
               <CCardBody>
                 <CRow className="align-items-right mt-3">
                   <CCol xl md={{ span: 2, offset: 10 }}>

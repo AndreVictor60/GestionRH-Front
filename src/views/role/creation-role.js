@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -20,9 +19,6 @@ class createRole extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Création d'un nouveau rôle
-              </CCardHeader>
               <CCardBody>
                 <CreateRole />
               </CCardBody>

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class createEntreprise extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Création d'une entreprise
-              </CCardHeader>
               <CCardBody>
                 <CreateEntreprise />
               </CCardBody>

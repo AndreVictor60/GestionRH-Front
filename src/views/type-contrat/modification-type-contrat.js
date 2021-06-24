@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class updateTypeContrat extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modifier un type de contrat
-              </CCardHeader>
               <CCardBody>
                 <UpdateTypeContrat typeContratId={this.props.match.params} />
               </CCardBody>

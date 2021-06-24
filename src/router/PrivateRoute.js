@@ -6,7 +6,6 @@ import jwt_decode from 'jwt-decode';
 
 export default function PrivateRoute( { redirectTo, role, children, ...rest } ){
     const authen = useSelector(state => state.authen);
-    console.log(authen)
     const user = jwt_decode(authen.user);
     const result = user.roles.filter(function(o1){
         return role.some(function(o2){

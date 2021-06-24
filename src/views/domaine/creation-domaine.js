@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class createDomaine extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Création d'un nouveau domaine
-              </CCardHeader>
               <CCardBody>
                 <CreateDomaine />
               </CCardBody>
