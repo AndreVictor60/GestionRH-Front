@@ -391,13 +391,13 @@ export class CreateFormation extends Component {
     const json = JSON.stringify(this.state.currentFormation).split('"value":').join('"id":');
     const data = JSON.parse(json);
     formationsService.save(data)
-      .then((resp) => {
+      .then(
         this.setState({
           message: "Création bien prise en compte ! Redirection vers la liste des formations.",
           ifError: false
-      });
-      window.setTimeout(() => {this.props.history.push('/formations')}, 5000)
-      })
+        }),
+        window.setTimeout(() => {this.props.history.push('/formations')}, 1000)
+      )
       .catch((e) => {
         this.setState({
           message: e,
@@ -417,7 +417,7 @@ export class CreateFormation extends Component {
 
 
   render() {
-    const { domains, skills, currentFormation, currentErrors,message,ifError } = this.state;
+    const { domains, skills, currentFormation, currentErrors, message, ifError } = this.state;
     const dateNow = new Date();
     return (
       <div className="submit-form">

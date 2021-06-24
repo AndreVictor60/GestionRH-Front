@@ -24,6 +24,7 @@ class ListPoste extends Component {
     this.onchangeAllPoste = this.onchangeAllPoste.bind(this); 
     this.handlePageClick = this.handlePageClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.triPar = this.triPar.bind(this);
     //this.refreshList = this.refreshList.bind(this);
     //this.searchTitle = this.searchTitle.bind(this);
 

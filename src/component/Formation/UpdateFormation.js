@@ -5,7 +5,8 @@ import Select from "react-select";
 import competenceService from "src/services/competence.service";
 import domaineService from "src/services/domaine.service";
 import formationsService from "src/services/formations.service";
-import { compareDateStringWithDateCurrent, compareTwoDateString, ifNumberWithDecimal,ifNumber,isValidDate } from "src/utils/fonctions";
+import salariesService from "src/services/salaries.service";
+import { compareDateStringWithDateCurrent, compareTwoDateString, ifNumberWithDecimal, ifNumber, isValidDate } from "src/utils/fonctions";
 import { withRouter } from "react-router-dom";
 
 class UpdateFormation extends Component {
@@ -18,9 +19,14 @@ class UpdateFormation extends Component {
     this.updateTraining = this.updateTraining.bind(this);
     this.validationForm = this.validationForm.bind(this);
     this.getFormation = this.getFormation.bind(this);
+    this.getAllEmployee = this.getAllEmployee.bind(this);
+    this.getAllEmployeeFormation = this.getAllEmployeeFormation.bind(this);
+    this.onChangeEmployee = this.onChangeEmployee.bind(this);
     this.state = {
       message: null,
       ifError: null,
+      employee: [],
+      employeeFormation: [],
       currentErrors: {
         title: null,
         titleBool: false,
@@ -61,7 +67,7 @@ class UpdateFormation extends Component {
     const name = target.name;
     if (name === "title") {
       if (value === "" || value === null || value.length === 0) {
-          console.log("title est null")
+        console.log("title est null")
         this.setState((prevState) => ({
           currentErrors: {
             ...prevState.currentErrors,
@@ -87,14 +93,14 @@ class UpdateFormation extends Component {
     if (name === "duration") {
       if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-            currentErrors: {
-              ...prevState.currentErrors,
-              duration: "Le champ durée est requis.",
-              durationBool: true,
-            }
-          }));
+          currentErrors: {
+            ...prevState.currentErrors,
+            duration: "Le champ durée est requis.",
+            durationBool: true,
+          }
+        }));
       } else {
-        if(!ifNumber(value)){
+        if (!ifNumber(value)) {
           this.setState((prevState) => ({
             currentErrors: {
               ...prevState.currentErrors,
@@ -102,8 +108,8 @@ class UpdateFormation extends Component {
               durationBool: true,
             }
           }));
-        }else{
-          if(value <= 0){
+        } else {
+          if (value <= 0) {
             this.setState((prevState) => ({
               currentErrors: {
                 ...prevState.currentErrors,
@@ -111,18 +117,18 @@ class UpdateFormation extends Component {
                 durationBool: true,
               }
             }));
-          }else{
+          } else {
             this.setState((prevState) => ({
               currentErrors: {
-                  ...prevState.currentErrors,
-                  duration: null,
-                  durationBool: false,
+                ...prevState.currentErrors,
+                duration: null,
+                durationBool: false,
               },
               currentFormation: {
-                  ...prevState.currentFormation,
-                  duree: value,
+                ...prevState.currentFormation,
+                duree: value,
               },
-          }));
+            }));
           }
         }
       }
@@ -131,35 +137,35 @@ class UpdateFormation extends Component {
     if (name === "price") {
       if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentErrors:{
+          currentErrors: {
             ...prevState.currentErrors,
-            price : "Le champ prix est requis.",
+            price: "Le champ prix est requis.",
             priceBool: true
           }
         }));
-      }else{
-        if(!ifNumberWithDecimal(value)){
+      } else {
+        if (!ifNumberWithDecimal(value)) {
           this.setState((prevState) => ({
-            currentErrors:{
+            currentErrors: {
               ...prevState.currentErrors,
-              price : "Veuillez saisir un prix correct.",
+              price: "Veuillez saisir un prix correct.",
               priceBool: true
             }
           }));
-        }else{
-          if(value <= 0){
+        } else {
+          if (value <= 0) {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
-                price : "Le prix ne peut être inférieur à zero.",
+                price: "Le prix ne peut être inférieur à zero.",
                 priceBool: true
               }
             }));
-          }else{
+          } else {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
-                price : null,
+                price: null,
                 priceBool: false
               },
               currentFormation: {
@@ -173,39 +179,39 @@ class UpdateFormation extends Component {
     }
 
     if (name === "startDate") {
-      console.log("isValidDate",isValidDate(value))
+      console.log("isValidDate", isValidDate(value))
       if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentErrors:{
+          currentErrors: {
             ...prevState.currentErrors,
             startDate: "Le champ date début est requis.",
-            startDateBool : true,
+            startDateBool: true,
           }
         }));
-      }else{
-        if(!isValidDate(value)){
+      } else {
+        if (!isValidDate(value)) {
           this.setState((prevState) => ({
-            currentErrors:{
+            currentErrors: {
               ...prevState.currentErrors,
               startDate: "Veuillez saisir un date correct.",
-              startDateBool : true,
+              startDateBool: true,
             }
           }));
-        }else{
-          if(!compareDateStringWithDateCurrent(value)){
+        } else {
+          if (!compareDateStringWithDateCurrent(value)) {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
                 startDate: "La date doit être ultérieure à la date du jour.",
-                startDateBool : true,
+                startDateBool: true,
               }
             }));
-          }else{
+          } else {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
                 startDate: null,
-                startDateBool : false,
+                startDateBool: false,
               },
               currentFormation: {
                 ...prevState.currentFormation,
@@ -214,7 +220,7 @@ class UpdateFormation extends Component {
             }));
           }
         }
-        
+
       }
     }
 
@@ -224,33 +230,33 @@ class UpdateFormation extends Component {
     if (name === "endDate") {
       if (value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentErrors:{
+          currentErrors: {
             ...prevState.currentErrors,
             endDate: "Le champ date de fin est requis.",
             endDateBool: true
           }
         }));
-      }else{
-        if(!isValidDate(value)){
+      } else {
+        if (!isValidDate(value)) {
           this.setState((prevState) => ({
-            currentErrors:{
+            currentErrors: {
               ...prevState.currentErrors,
               endDate: "Veuillez saisir une date correct.",
               endDateBool: true
             }
           }));
-        }else{
-          if(compareTwoDateString(this.state.currentFormation.dateDebut,value) === "+" || compareTwoDateString(this.state.currentFormation.dateDebut,value) === "=" ){
+        } else {
+          if (compareTwoDateString(this.state.currentFormation.dateDebut, value) === "+" || compareTwoDateString(this.state.currentFormation.dateDebut, value) === "=") {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
                 endDate: "Le date de fin ne peut être inférieur ou égal a la date de début.",
                 endDateBool: true
               }
             }));
-          }else{
+          } else {
             this.setState((prevState) => ({
-              currentErrors:{
+              currentErrors: {
                 ...prevState.currentErrors,
                 endDate: null,
                 endDateBool: false
@@ -268,24 +274,24 @@ class UpdateFormation extends Component {
       console.log(value);
       if (value === "0" || value === "" || value === null || value.length === 0) {
         this.setState((prevState) => ({
-          currentErrors:{
+          currentErrors: {
             ...prevState.currentErrors,
             domain: "Le champ domaine est requis.",
             domainBool: true
           }
         }));
-      }else{
-        if(this.state.domains.find(e => e.id === parseInt(value)) === undefined){
+      } else {
+        if (this.state.domains.find(e => e.id === parseInt(value)) === undefined) {
           this.setState((prevState) => ({
-            currentErrors:{
+            currentErrors: {
               ...prevState.currentErrors,
               domain: "Veuillez sélectionner un domaine qui existe.",
               domainBool: true
             }
           }));
-        }else{
+        } else {
           this.setState((prevState) => ({
-            currentErrors:{
+            currentErrors: {
               ...prevState.currentErrors,
               domain: null,
               domainBool: false
@@ -303,16 +309,18 @@ class UpdateFormation extends Component {
   }
 
   componentDidMount() {
-    this.getFormation(this.props.formationid.id)
+    this.getFormation(this.props.formationid.id);
+    this.getAllEmployeeFormation(this.props.formationid.id);
     this.getAllDomaines();
     this.getAllSkills();
+    this.getAllEmployee();
   }
 
   onChangeSkills(e) {
-      console.log(e.length)
-    if(e.length === 0){
+    console.log(e.length)
+    if (e.length === 0) {
       this.setState((prevState) => ({
-        currentErrors:{
+        currentErrors: {
           ...prevState.currentErrors,
           skill: "Veuillez séléctionner au moins une compétences",
           skillBool: true
@@ -322,9 +330,9 @@ class UpdateFormation extends Component {
           competences: e,
         },
       }));
-    }else{
+    } else {
       this.setState((prevState) => ({
-        currentErrors:{
+        currentErrors: {
           ...prevState.currentErrors,
           skill: null,
           skillBool: false
@@ -337,29 +345,62 @@ class UpdateFormation extends Component {
     }
   }
 
-  validationForm(){
-    const { currentErrors,currentFormation } = this.state;
-    if(currentFormation.domaine.id === 0){
+  getAllEmployee() {
+    salariesService.getAll().then((response) => {
+      this.setState({ employee: response.data });
+    })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  getAllEmployeeFormation(idFormation) {
+    formationsService.getSalarieByIdFormation(idFormation).then((response) => {
+      this.setState({ employeeFormation: response.data });
+      console.log("employee formation : ", response.data);
+    })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  onChangeEmployee(e) {
+    console.log("employee : ", e);
+    if (e.length > 0) {
       this.setState((prevState) => ({
-        currentErrors:{
+        ...prevState.employeeFormation,
+        employeeFormation: e,
+      }));
+    }else{
+      this.setState(({
+        employeeFormation: null,
+      }));
+    }
+  }
+
+  validationForm() {
+    const { currentErrors, currentFormation } = this.state;
+    if (currentFormation.domaine.id === 0) {
+      this.setState((prevState) => ({
+        currentErrors: {
           ...prevState.currentErrors,
           domain: "Le champ domaine est requis.",
           domainBool: true
         }
       }));
     }
-    if(Object.entries(currentFormation.competences).length === 0){
+    if (Object.entries(currentFormation.competences).length === 0) {
       this.setState((prevState) => ({
-        currentErrors:{
+        currentErrors: {
           ...prevState.currentErrors,
           skill: "Veuillez séléctionner au moins une compétences",
           skillBool: true
         }
       }));
     }
-    if(!currentErrors.durationBool && !currentErrors.startDateBool && !currentErrors.endDateBool && !currentErrors.domainBool && !currentErrors.titleBool && !currentErrors.skillBool && !currentErrors.priceBool){
+    if (!currentErrors.durationBool && !currentErrors.startDateBool && !currentErrors.endDateBool && !currentErrors.domainBool && !currentErrors.titleBool && !currentErrors.skillBool && !currentErrors.priceBool) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -386,54 +427,65 @@ class UpdateFormation extends Component {
       });
   }
 
-  getFormation(id){
+  getFormation(id) {
     formationsService.getFormationById(id)
-    .then(response => {
-      this.setState({
+      .then(response => {
+        this.setState({
           currentFormation: response.data
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
       });
-      console.log(response.data);
-    })
-    .catch(e => {
-      console.log(e);
-    });
   }
 
   updateTraining(e) {
-   e.preventDefault();
-   console.log(this.state.currentErrors);
-   if(this.validationForm()){
-    const json = JSON.stringify(this.state.currentFormation).split('"value":').join('"id":');
-    const data = JSON.parse(json);
-    formationsService.update(data)
-      .then((resp) => {
-        this.setState({
-          message: "Création bien prise en compte ! Redirection vers la liste des formations.",
-          ifError: false
-      });
-      window.setTimeout(() => {this.props.history.push('/formations')}, 5000)
-      })
-      .catch((e) => {
-        this.setState({
-          message: e,
-          ifError: true
+    e.preventDefault();
+    console.log(this.state.currentErrors);
+    let idEmployeeFormation = this.state.employeeFormation !== null ? this.state.employeeFormation.map(ef => ef.id) : 0;
+
+    if (this.validationForm()) {
+      const json = JSON.stringify(this.state.currentFormation).split('"value":').join('"id":');
+      const data = JSON.parse(json);
+      formationsService.update(data)
+        .then((resp) => {
+          formationsService.saveOrUpdateSalarieFormation(data.id, idEmployeeFormation).then(
+            this.setState({
+              message: "Création bien prise en compte ! Redirection vers la liste des formations.",
+              ifError: false
+            }),
+            window.setTimeout(() => { this.props.history.push('/formations') }, 1000)
+          ).catch((e) => {
+            this.setState({
+              message: e,
+              ifError: true
+            });
+            console.log(e);
+          });
+          
+        })
+        .catch((e) => {
+          this.setState({
+            message: e,
+            ifError: true
+          });
+          console.log(e);
         });
-        console.log(e);
+    } else {
+      this.setState({
+        message: "Une erreur s'est produite ! veuillez ré-essayer.",
+        ifError: true
       });
-   }else{
-    this.setState({
-      message: "Une erreur s'est produite ! veuillez ré-essayer.",
-      ifError: true
-    });
-   }
+    }
   }
 
 
 
   render() {
-    const { domains, skills, currentFormation, currentErrors,message,ifError } = this.state;
+    const { domains, skills, currentFormation, currentErrors, message, ifError, employee, employeeFormation } = this.state;
     const dateNow = new Date();
-    console.log("render",this.state.currentErrors);
+    //console.log("render",this.state.currentErrors);
     return (
       <div className="submit-form">
         <div>
@@ -568,7 +620,31 @@ class UpdateFormation extends Component {
                     onChange={this.onChangeSkills}
                     isMulti
                     isSearchable={true}
-                    
+
+                  />
+                  <span className="text-danger">{currentErrors.skill}</span>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="employeeFormation">Salarie</label>
+                  <Select
+                    name="employeeFormation"
+                    required={false}
+                    placeholder="Liste des salariés"
+                    value={
+                      employeeFormation === null
+                        ? null
+                        : employeeFormation
+                    }
+                    getOptionLabel={option => option.nom}
+                    getOptionValue={option => option.id}
+                    options={employee.map((e) => ({ nom: e.nom + " " + e.prenom, id: e.id }))}
+                    onChange={this.onChangeEmployee}
+                    isMulti
+                    isSearchable={true}
                   />
                   <span className="text-danger">{currentErrors.skill}</span>
                 </div>

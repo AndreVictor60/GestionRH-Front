@@ -4,7 +4,9 @@ import moment from 'moment';
 class Formation extends Component {
     constructor(props) {
         super(props);
+        this.getAllEmployeeFormation = this.getAllEmployeeFormation.bind(this);
         this.state={
+            employeeFormation: [],
             formation: {
                 dateDebut: null,
                 dateFin: null,
@@ -25,6 +27,7 @@ class Formation extends Component {
 
     componentDidMount(){
         this.retrieveFormation(this.props.formationId.id);
+        this.getAllEmployeeFormation(this.props.formationId.id);
     }
 
     retrieveFormation(id) {
@@ -38,9 +41,18 @@ class Formation extends Component {
           console.log(e);
         });
     }
+
+    getAllEmployeeFormation(idFormation) {
+        FormationService.getSalarieByIdFormation(idFormation).then((response) => {
+            this.setState({ employeeFormation: response.data });
+            console.log("employee formation : ", response.data);
+        }).catch((e) => {
+            console.log(e);
+        });
+      }
     
     render() {
-        const {formation} = this.state;
+        const {formation, employeeFormation} = this.state;
         const competences = formation.competences
         return (
             <div>
@@ -52,14 +64,25 @@ class Formation extends Component {
                      Domaine : {formation.domaine.titre}</p>
                 <fieldset>
                     <legend>Compétences à promouvoir lors cette formation :</legend>
+                    <ul>
+                        {competences.map(competence => 
+                        <div key={competence.id}>
+                            <li>{competence.nom}</li>
+                        </div>
+                        )}
+                    </ul>
+                </fieldset>
+                {employeeFormation.length>0 ? 
+                <fieldset>
+                <legend>Liste des salariés participants à la formation : </legend>
                 <ul>
-                    {competences.map(competence => 
-                    <div key={competence.id}>
-                        <li>{competence.nom}</li>
+                    {employeeFormation.map(employee => 
+                    <div key={employee.id}>
+                        <li>{employee.nom+" "+employee.prenom}</li>
                     </div>
                     )}
                 </ul>
-                </fieldset>
+            </fieldset> : null}
             </div>
         )
     }

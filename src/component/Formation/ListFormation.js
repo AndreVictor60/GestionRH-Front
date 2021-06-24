@@ -9,6 +9,7 @@ import getDay from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import fr from "date-fns/locale/fr";
+import "./styles.css";
 registerLocale("fr", fr);
 
 class ListFormation extends Component {
@@ -21,6 +22,7 @@ class ListFormation extends Component {
     this.onChangeLastDate = this.onChangeLastDate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.searchFormation = this.searchFormation.bind(this);
+    this.triPar = this.triPar.bind(this);
     this.state = {
       startDate: new Date(),
       endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
@@ -28,7 +30,9 @@ class ListFormation extends Component {
       itemsPerPage: 5,
       currentPage: 0,
       pageCount: 0,
-      searchExpression: ""
+      searchExpression: "",
+      sortBy: "id",
+      order: "DESC"
     }
   }
   isWeekday = (date) => {
@@ -45,7 +49,7 @@ class ListFormation extends Component {
       this.setState({ pageCount: nbPage })
       console.log(resp.data)
     }).catch((e) => { console.log(e.message) });
-    FormationService.getFormationPeriodByPage(this.state.currentPage, this.state.itemsPerPage,this.state.searchExpression, this.state.startDate, this.state.endDate)
+    FormationService.getFormationPeriodByPage(this.state.currentPage, this.state.itemsPerPage,this.state.searchExpression, this.state.startDate, this.state.endDate, this.state.sortBy, this.state.order)
       .then(response => {
         this.setState({
           formations: response.data
@@ -87,6 +91,33 @@ class ListFormation extends Component {
     if( name === "nbPage"){
       this.setState({itemsPerPage: value}, () => {this.retrieveFormation();}) 
     }
+  }
+
+  triPar(sort) {
+    if(this.state.sortBy === sort){
+      if(this.state.order === "DESC"){
+        this.setState({
+          order: "ASC"
+        });
+      }else{
+        this.setState({
+          order: "DESC"
+        });
+      }
+    }else{
+      if(this.state.order === "DESC"){
+        this.setState({
+          sortBy: sort,
+          order: "ASC"
+        });
+      }else{
+        this.setState({
+          sortBy: sort,
+          order: "DESC"
+        });
+      }
+    }
+    this.retrieveFormation();
   }
 
   render() {
@@ -168,13 +199,13 @@ class ListFormation extends Component {
         <div className="row mt-2">
           <div className="col-lg-12">
             <table className="table table-hover table-striped table-bordered">
-              <thead>
+              <thead className="cursor-pointer" title="Cliquer pour trier.">
                 <tr>
-                  <th>Titre</th>
-                  <th>Date de début</th>
-                  <th>Date de fin</th>
-                  <th>Durée<span><small><i>(en heure)</i></small></span></th>
-                  <th>Prix<span><small><i>(TTC)</i></small></span></th>
+                  <th onClick={() => this.triPar("titre")}>Titre</th>
+                  <th onClick={() => this.triPar("dateDebut")}>Date de début</th>
+                  <th onClick={() => this.triPar("dateFin")}>Date de fin</th>
+                  <th onClick={() => this.triPar("duree")}>Durée<span><small><i>(en heure)</i></small></span></th>
+                  <th onClick={() => this.triPar("prix")}>Prix<span><small><i>(TTC)</i></small></span></th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -187,8 +218,16 @@ class ListFormation extends Component {
                     <td>{moment(formation.dateFin).format('DD/MM/YYYY')}</td>
                     <td>{formation.duree}</td>
                     <td>{formation.prix} €</td>
-                    <td><Link to={"/formations/voir/" + formation.id}>Voir</Link></td>
-                    <td><Link to={"/formations/modification/" + formation.id}>Modifier</Link></td>
+                    <td><Link to={"/formations/voir/" + formation.id}><CButton
+                          className="mr-2"
+                          color="info"
+                          title="Vous voulez voir cette ligne ?"
+                        >Voir</CButton></Link></td>
+                    <td><Link to={"/formations/modification/" + formation.id}><CButton
+                          className="mr-2"
+                          color="info"
+                          title="Vous voulez Modifier cette ligne ?"
+                        >Modifier</CButton></Link></td>
                   </tr>
                 )}
               </tbody>
