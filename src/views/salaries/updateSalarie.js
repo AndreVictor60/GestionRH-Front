@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -16,9 +15,6 @@ class updateSalarie extends Component {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>
-              Modification du salarié
-            </CCardHeader>
             <CCardBody>
               <UpdateSalarie salarieId={this.props.match.params} />
             </CCardBody>

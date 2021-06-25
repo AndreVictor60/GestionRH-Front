@@ -36,10 +36,13 @@ const AllPoste = React.lazy(() => import('./views/poste/listPoste'));
 const CreatePoste = React.lazy(() => import('./views/poste/creation-poste'));
 const UpdatePoste = React.lazy(() => import('./views/poste/modification-poste'));
 const AllEntretien = React.lazy(() => import('./views/entretiens/allEntretiens'));
+const AllEntretienSalarie = React.lazy(() => import('./views/entretiens/allEntretienSalarie'));
+const AllEntretienManager = React.lazy(() => import('./views/entretiens/allEntretienManager'));
 const CreateEntretien = React.lazy(() => import('./views/entretiens/createEntretien'));
 const UpdateEntretien = React.lazy(() => import('./views/entretiens/updateEntretien'));
 const AllSalariesTest = React.lazy(() => import('./views/salaries/listSalarieTest'));
 const UpdatePassword = React.lazy(() => import('./views/salaries/updatePassword'));
+const Entretien = React.lazy(() => import('./views/entretiens/entretien'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home',role:[], component: Dashboard },
@@ -90,6 +93,9 @@ const routes = [
   { path: '/entretiens/liste', exact: true, name: 'Liste des entretiens',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'}], component: AllEntretien },
   { path: '/entretiens/creation',exact: true, name: 'Creation d\'un entretien',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'}], component: CreateEntretien },
   { path: '/entretiens/modification/:id',exact: true, name: 'Modifier un entretien',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'}], component: UpdateEntretien },
+  { path: '/entretiens/salarie/list',exact: true, name: 'Liste des entretiens',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'},{name:'EMPLOYEE'}], component: AllEntretienSalarie },
+  { path: '/entretiens/manager/list',exact: true, name: 'Liste des entretiens',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'}], component: AllEntretienManager },
+  { path: '/entretiens/entretien',exact: true, name: 'Mon entretien',role:[{name:"RH"},{name:'ADMIN'},{name:'MANAGER'},{name:'EMPLOYEE'}], component: Entretien },
 ];
 
 export default routes;

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow
 } from '@coreui/react'
@@ -18,9 +17,6 @@ class updateTitrePoste extends Component {
         <CRow>
           <CCol>
             <CCard>
-              <CCardHeader>
-                Modifier un  intitulé de poste
-              </CCardHeader>
               <CCardBody>
                 <UpdateTitrePoste titrePosteId={this.props.match.params} />
               </CCardBody>

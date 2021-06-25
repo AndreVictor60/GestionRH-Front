@@ -7,8 +7,8 @@ import jwt_decode from 'jwt-decode';
 const user = JSON.parse(localStorage.getItem("token"));
 
 const initialState = user 
-  ? { isLoggedIn: true, user, isRole:checkRole(user) }
-  : { isLoggedIn: false, user: null,isRole: null};
+  ? { isLoggedIn: true, user,idUser:jwt_decode(user).id, isRole:checkRole(user) }
+  : { isLoggedIn: false, user: null,idUser: null,isRole: null};
 
 function checkRole(token) {
   const user = jwt_decode(token);
@@ -34,6 +34,7 @@ export default function reducerAuthentification(state = initialState, action) {
         ...state,
         isLoggedIn: true,
         user: payload.user,
+        idUser: jwt_decode(payload.user).id,
         isRole: checkRole(payload.user)
       };
     case LOGIN_FAIL:

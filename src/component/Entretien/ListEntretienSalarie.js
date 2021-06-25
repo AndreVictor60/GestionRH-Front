@@ -1,0 +1,136 @@
+import React, { Component } from "react";
+import EntretienService from "../../services/entretien.service";
+import moment from 'moment';
+import momentFR from 'moment/locale/fr';
+import { Link } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
+import { connect } from "react-redux";
+import { CButton } from "@coreui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+class ListEntretien extends Component {
+  constructor(props) {
+    super(props);
+    this.retrieveEntretien = this.retrieveEntretien.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
+    this.state = {
+      nomSalarie: "",
+      nomManager: "",
+      entretiens: [],
+      salaries: {},
+      managers: {},
+      itemsPerPage: 5,
+      currentPage: 0,
+      pageCount: 0,
+      searchExpression: ""
+    };
+    moment.locale('fr', momentFR);
+  }
+
+  componentDidMount() {
+    this.retrieveEntretien();
+  }
+
+  retrieveEntretien() {
+    EntretienService.count(this.props.idUser, undefined).then((resp) => {
+      let nbPage = Math.ceil(resp.data / this.state.itemsPerPage)
+      this.setState({ pageCount: nbPage })
+    }).catch((e) => { console.log(e) });
+    EntretienService.getAllEntretiensByPage(this.state.currentPage, this.state.itemsPerPage, this.props.idUser, undefined)
+      .then(response => {
+        this.setState({
+          entretiens: response.data
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  handlePageClick = (data) => {
+    let selected = data.selected;
+    this.setState({ currentPage: selected }, () => {
+      this.retrieveEntretien();
+    });
+  };
+
+  render() {
+    // TODO: passer entretien en state dans LINK
+    const { entretiens } = this.state;
+    return (
+      <>
+        <div className="row mt-4">
+          <div className="col-lg-12">
+            <table className="table table-hover table-striped table-bordered ">
+              <thead>
+                <tr>
+                  <th>Date / heure</th>
+                  <th>Compte rendu</th>
+                  <th>Manager  (Prenom-Nom)</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              {entretiens.length > 0 ? (
+                <tbody>
+                  {entretiens.map(entretien =>
+                  <tr key={entretien.id}>
+                    <td>{moment(entretien.dateEntretien).format("llll")}</td>
+                    <td>{entretien.compteRendu === null ? "Aucun" : entretien.compteRendu.compteRendu}</td>
+                    <td>{`${entretien.managerEntretien.prenom} ${entretien.managerEntretien.nom}`}</td>
+                    <td></td>
+                      <td>
+                        <Link to={{ pathname: "/entretiens/entretien", state: entretien }}>
+                          <CButton type="button" block color="info">
+                            <FontAwesomeIcon icon={["fas", "eye"]} /> Voir
+                          </CButton>
+                        </Link>
+                      </td>
+                  </tr>
+                  )}
+                </tbody>
+                ):(
+                  <tbody>
+                    <td colspan="6" className="text-center font-weight-bold" >Aucun entretien</td>
+                  </tbody>
+                )}
+            </table>
+            {this.state.pageCount > 1 && (            <ReactPaginate
+              previousLabel={'Précédent'}
+              nextLabel={'Suivant'}
+              breakLabel={'...'}
+              pageCount={this.state.pageCount}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={4}
+              onPageChange={this.handlePageClick}
+              containerClassName="pagination"
+              activeClassName="active"
+              pageLinkClassName="page-link"
+              breakLinkClassName="page-link"
+              nextLinkClassName="page-link"
+              previousLinkClassName="page-link"
+              pageClassName="page-item"
+              breakClassName="page-item"
+              nextClassName="page-item"
+              previousClassName="page-item"
+              forcePage={this.state.currentPage}
+            />)}
+
+          </div>
+          </div>
+      </>
+    );
+
+  }
+}
+
+function mapStateToProps(state) {
+  const { isRole,idUser } = state.authen;
+  return {
+    isRole,
+    idUser
+  };
+}
+
+export default connect(mapStateToProps)(ListEntretien);

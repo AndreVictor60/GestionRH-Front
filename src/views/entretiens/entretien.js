@@ -5,9 +5,9 @@ import {
   CCol,
   CRow
 } from '@coreui/react'
-import UpdatePassword from '../../component/Salarie/UpdatePassword';
+import Entretien from '../../component/Entretien/Entretien';
 
-class updatePassword extends Component {
+class entretien extends Component {
 
   render() {
     return(
@@ -16,7 +16,7 @@ class updatePassword extends Component {
         <CCol>
           <CCard>
             <CCardBody>
-              <UpdatePassword/>
+              <Entretien/>
             </CCardBody>
           </CCard>
         </CCol>
@@ -26,4 +26,4 @@ class updatePassword extends Component {
   }
 }
 
-export default updatePassword
+export default entretien

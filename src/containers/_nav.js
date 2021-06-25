@@ -180,6 +180,16 @@ export const navRH =  [
     _children: [
       {
         _tag: 'CSidebarNavItem',
+        name: 'Mes entretiens',
+        to: '/entretiens/salarie/list',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Mes entretien manager',
+        to: '/entretiens/manager/list',
+      },
+      {
+        _tag: 'CSidebarNavItem',
         name: 'Liste des entretiens',
         to: '/entretiens/liste',
       },
@@ -422,6 +432,16 @@ export const navAdmin =  [
     _children: [
       {
         _tag: 'CSidebarNavItem',
+        name: 'Mes entretiens',
+        to: '/entretiens/salarie/list',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Mes entretien manager',
+        to: '/entretiens/manager/list',
+      },
+      {
+        _tag: 'CSidebarNavItem',
         name: 'Liste des entretiens',
         to: '/entretiens/liste',
       },
@@ -480,8 +500,13 @@ export const navManager = [
     _children: [
       {
         _tag: 'CSidebarNavItem',
-        name: 'Liste des entretiens',
-        to: '/entretiens/liste',
+        name: 'Mes entretiens',
+        to: '/entretiens/salarie/list',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Mes entretien manager',
+        to: '/entretiens/manager/list',
       },
       {
         _tag: 'CSidebarNavItem',
@@ -498,5 +523,17 @@ export const navEmployee = [
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon"/>,
+  },{
+    _tag: 'CSidebarNavDropdown',
+    name: 'Entretien',
+    route: '/entretiens',
+    icon: 'cil-puzzle',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Mes entretiens',
+        to: '/entretiens/salarie/list',
+      }
+    ],
   }
 ]

@@ -3,22 +3,19 @@ import {
   CCard,
   CCardBody,
   CCol,
-  CRow
+  CRow,
 } from '@coreui/react'
-/*import CIcon from '@coreui/icons-react'*/
-//import { Link } from 'react-router-dom'
-import CreateTitrePoste from '../../component/TitrePoste/CreateTitrePoste';
+import ListEntretienSalarie from '../../component/Entretien/ListEntretienSalarie';
 
-class createTitrePoste extends Component {
-
+class AllEntretienSalarie extends Component {
   render() {
     return(
       <>
         <CRow>
-          <CCol>
+          <CCol lg="12">
             <CCard>
               <CCardBody>
-                <CreateTitrePoste />
+              <ListEntretienSalarie />
               </CCardBody>
             </CCard>
           </CCol>
@@ -28,4 +25,4 @@ class createTitrePoste extends Component {
   }
 }
 
-export default createTitrePoste
+export default AllEntretienSalarie
